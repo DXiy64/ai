@@ -1,0 +1,1 @@
+{"name":"ai","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"vite --host 127.0.0.1","build":"vite build","deploy":"npm run build && wrangler deploy","refresh-data":"node scripts/refresh-data.mjs","check":"node scripts/check-data.mjs"},"dependencies":{"plotly.js-gl3d-dist-min":"^3.3.0"},"devDependencies":{"vite":"^7.1.0","wrangler":"^4.151.0"}}
