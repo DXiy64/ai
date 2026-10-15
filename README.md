@@ -1,41 +1,17 @@
-# ai · 模型三维图谱
+# ai · 三维图
 
-交互式 AI 模型三维散点图：X = Artificial Analysis Intelligence Index，Y = Cost per Task（USD），Z = Time per Task（分钟）。
+浅色全屏 AI 模型三维散点图。X = Intelligence Index，Y = Cost per Task（USD），Z = Time per Task（分钟）。支持自由旋转、滚轮缩放、悬停查看指标、三轴平面视角及复位。
 
 线上地址：https://ai.mou7s.com
 
-## 功能
+## 数据
 
-- 自由旋转、滚轮缩放、三轴平面预设视角和复位
-- 厂商和模型搜索筛选、模型标签、成本 / 时间对数坐标
-- 三维 Pareto 前沿筛选、点击模型详情、同步数据表和 CSV 导出
-- 响应式布局，本地打包 Plotly，无图表 CDN 依赖
-- 完整模型列表快照，厂商列表独立滚动，不受首页精选范围限制
+来源：https://artificialanalysis.ai/models/ 。完整公开列表快照，共 700 个模型及推理档位，其中 183 个三轴指标完整的模型全部绘图。缺失值不会补为零。获取时间与原始精度保存在 `src/data.json`。
 
-## 数据口径
-
-来源：[Artificial Analysis](https://artificialanalysis.ai/) 模型页完整公开列表快照，包含不同推理档位。目前收录 700 个条目，183 个三轴数据完整的条目全部绘图。不是实时数据。获取时间和缺失指标在页面底部显示。只有三个指标均完整的模型参与绘图；缺失值不会补为零。`src/data.json` 保留原始精度。
-
-成本采用 `intelligenceIndexCostPerTask.cost.total`。时间采用 `intelligenceIndexTimePerTask`（秒），绘图时除以 60 换算为分钟。Time per Task 是根据输出 token / 输出速度计算的加权解码时间，不含 TTFT 或额外开销，不能当作实际端到端请求时间。详见[官方方法](https://artificialanalysis.ai/methodology)。Pareto 前沿只对当前快照的完整模型计算，筛选厂商不会改变比较基准。
+成本取 `intelligenceIndexCostPerTask.cost.total`；时间取 `intelligenceIndexTimePerTask`（秒），绘图除以 60。时间为加权解码时间，不含 TTFT 或其他开销。方法：https://artificialanalysis.ai/methodology
 
 ## 开发和部署
 
-```sh
-npm ci
-npm run dev
-npm run check
-npm run build
-npm run deploy
-```
+Node.js >= 24.5。运行 `npm ci`、`npm run dev`。使用 `npm run build` 构建，`npm run deploy` 部署 Cloudflare Workers Static Assets。域名在 `wrangler.jsonc` 声明。
 
-Cloudflare Workers Static Assets，域名在 `wrangler.jsonc` 声明。部署需要 Cloudflare 授权。
-
-## 刷新数据
-
-```sh
-npm run refresh-data
-npm run check
-npm run deploy
-```
-
-刷新脚本读取公开模型页及该页面声明的完整数据资源，按 AA 浏览器加载器的 AES-GCM + gzip 格式解析（解码参数来自公开页面），无需登录或 API 密钥。若来源页面结构变化或有效模型不足，脚本报错并保留之前快照。刷新后自行提交 `src/data.json` 到 GitHub。本项目没有自动更新定时任务。
+运行 `npm run refresh-data` 刷新快照，再执行 `npm run check` 和 `npm run deploy`。脚本读取公开模型页及页面声明的数据资源，按 AA 浏览器加载器的 AES-GCM + gzip 格式解析，参数来自公开页面，无需登录或 API 密钥。页面结构变化或有效模型不足时，报错并保留旧快照。没有自动更新定时任务。
