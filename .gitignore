@@ -3,3 +3,6 @@ dist/
 .wrangler/
 .env*
 !.env.example
+
+test-results/
+src/data.json.tmp
