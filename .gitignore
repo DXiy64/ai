@@ -3,3 +3,6 @@ dist/
 .wrangler/
 .env*
 !.env.example
+
+.nuxt/
+.output/
