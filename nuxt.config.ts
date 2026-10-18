@@ -1,6 +1,8 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-15',
   devtools: { enabled: false },
+  // The production Worker is worker/index.mjs; Nuxt only generates static assets.
+  nitro: { preset: 'static', cloudflare: { deployConfig: false } },
   css: ['~/assets/main.css'],
   app: { head: {
     htmlAttrs: { lang: 'en' },
