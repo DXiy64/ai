@@ -1,34 +1,79 @@
-# ai · 三维图
+# ai · 3D Model Chart
 
-浅色全屏 AI 模型三维散点图。X = Intelligence Index，Y = Cost per Task（USD），Z = Time per Task（分钟）。支持自由旋转、滚轮缩放、悬停查看指标；在模型散点上点击右键可隐藏该点（状态保存在 sessionStorage 中，坐标轴自适应展开），按 R 键恢复初始视角与重置显示所有点。
+Explore AI models by Intelligence Index, Cost per Task (USD), and Time per Task (minutes).
 
-线上地址：https://ai.mou7s.com
+Live site: [ai.mou7s.com](https://ai.mou7s.com)
 
-## 数据
+## Using the chart
 
-来源：https://artificialanalysis.ai/models/ 。完整公开列表快照，共 704 个模型及推理档位，其中 187 个三轴指标完整的模型全部绘图。缺失值不会补为零。获取时间与原始精度保存在 `src/data.json`。
+- Drag to rotate, scroll to zoom, and hover over a point to inspect its metrics.
+- Press `/` to search by model or provider. Search ignores case and splits letters from numbers, so `deep4.1` matches DeepSeek V4.1 Flash.
+- Use ↑ / ↓ to select a search result, Enter to locate it, and Esc to close search. Results show intelligence, cost, and time; unavailable metrics appear as `—` and cannot be located.
+- Double-click a point to center the camera without changing axis bounds or marker sizes.
+- Right-click a point to hide it for the current browser session. Searching for a hidden model and selecting it restores it.
+- Press R to show all models and restore the initial camera. Shortcuts do not interrupt typing in the search field.
 
-成本取 `intelligenceIndexCostPerTask.cost.total`；时间取 `intelligenceIndexTimePerTask`（秒），绘图除以 60。时间为加权解码时间，不含 TTFT 或其他开销。方法：https://artificialanalysis.ai/methodology
+Axes use muted blue (intelligence), green (cost), and purple (time). Bounds start at zero and end on regular ticks. The **Ideal corner** marks the direction of higher intelligence, lower cost, and less time; it is not a combined model ranking.
 
-## 开发和部署
+## Data
 
-技术栈为 Nuxt 4 + Vue 3 + Plotly，使用 Bun 管理依赖和运行本地开发（当前 Bun 1.4.3）。
+Source: [Artificial Analysis](https://artificialanalysis.ai/models/). The checked-in snapshot contains 704 models and reasoning variants, of which 187 have all three required metrics. Missing values are never replaced with zero. Snapshot timestamps and original precision are retained in `src/data.json`; the live snapshot can differ after scheduled updates.
+
+Cost comes from `intelligenceIndexCostPerTask.cost.total`; time comes from `intelligenceIndexTimePerTask` in seconds and is converted to minutes for display. Time measures weighted decoding time, excluding TTFT and other overhead. See the [source methodology](https://artificialanalysis.ai/methodology).
+
+## Local development
+
+Nuxt 4, Vue 3, and Plotly, with Bun 1.4.3 for dependencies, development, and static generation. Node.js >= 24.5 is required for the data refresh script and deployment tooling.
 
 ```sh
 bun install --frozen-lockfile
 bun run dev
 ```
 
-本地地址默认为 http://127.0.0.1:3000。图表仅在客户端加载。
+Development runs at http://127.0.0.1:3000. The chart loads only in the browser. `bun run build` generates `.output/public`; `bun run preview` previews the generated site. The local Nuxt server does not run the production Worker's `/api/data` endpoint, so the chart falls back to its bundled snapshot.
 
-运行 `bun run build` 生成静态站点到 `.output/public`，`bun run preview` 本地预览构建结果，`bun run deploy` 部署 Cloudflare Workers Static Assets。域名在 `wrangler.jsonc` 声明；线上提供静态文件，不运行 Bun。
+## Deployment on push
 
-运行 `bun run refresh-data` 刷新快照，再执行 `bun run check` 和 `bun run deploy`。刷新脚本使用 Node.js >= 24.5，以保留 `--use-env-proxy` 代理支持；Wrangler 部署工具也需要 Node.js。脚本读取公开模型页及页面声明的数据资源，按 AA 浏览器加载器的 AES-GCM + gzip 格式解析，参数来自公开页面，无需登录或 API 密钥。页面结构变化或有效模型不足时，报错并保留旧快照。Cloudflare Cron 每 6 小时自动刷新（北京时间 02:00、08:00、14:00、20:00），校验通过后将快照写入 Workers KV。网页通过 `/api/data` 读取，缓存 5 分钟；失败时保留上次成功快照，KV 不可用时回退到随部署提供的数据。自动刷新不会修改 Git 仓库中的快照，已打开的网页需刷新才会加载新数据。
+Production uses Cloudflare Workers with Static Assets and the `MODEL_DATA` KV namespace configured in `wrangler.jsonc`. Cloudflare runs the Worker, not Bun.
 
-## Cloudflare 自动更新部署
+Connect the existing `ai` Worker to Git using these Cloudflare Workers Builds settings:
 
-首次部署前运行 `bunx wrangler login`，再运行 `bun run deploy`。Wrangler 会自动创建并绑定 `MODEL_DATA` KV；如提示确认创建，选择确认。首次定时刷新前，接口返回随部署提供的快照。
+| Setting | Value |
+| --- | --- |
+| Repository | `Mou7s/ai` |
+| Production branch | `main` |
+| Root directory | Repository root |
+| Build command | `bun run build` |
+| Deploy command | `npx wrangler deploy` |
+| Disable builds | Off |
+| Preview builds | Off for production-only deployments |
 
-在 Cloudflare 控制台的 Workers → ai → Observability 查看定时任务的成功日志或失败原因；Triggers 中查看 Cron。Cron 配置生效可能需要约 15 分钟。
+Once connected, pushing to `main` triggers a Cloudflare build and deployment to `ai.mou7s.com`. Check the Worker's Builds page for the commit, logs, and deployment result. Authentication is managed by Cloudflare Workers Builds; no GitHub Actions deployment token is needed. This repository intentionally has no separate GitHub Actions deployment workflow.
 
-本地验证：`bun run check`、`node --test tests/worker.test.mjs`、`bun run build`、`bunx wrangler deploy --dry-run`。使用 `bunx wrangler dev --test-scheduled`，访问 `/cdn-cgi/mf/scheduled` 可在本地触发任务，本地 KV 与线上隔离。
+For manual deployment, run `bunx wrangler login`, then `bun run deploy`. The existing account, custom domain, KV namespace, and Cron schedule are declared in `wrangler.jsonc`.
+
+## Scheduled data refresh
+
+Cloudflare Cron refreshes model data every six hours (02:00, 08:00, 14:00, and 20:00 Asia/Shanghai). Valid snapshots are written to Workers KV. `/api/data` serves the current snapshot with a five-minute cache; unavailable KV data falls back to the deployed snapshot. Failed refreshes preserve the last successful snapshot.
+
+Scheduled refreshes do not change the Git snapshot or deploy code. Refresh an open page to load updated data. Inspect scheduled task logs in the Worker's Observability page and schedules in Triggers.
+
+To refresh the checked-in snapshot manually:
+
+```sh
+bun run refresh-data
+bun run check
+```
+
+The refresh script uses Node's `--use-env-proxy`, reads public source data, and needs no source API key. Source format changes or insufficient valid data cause it to fail without replacing the snapshot.
+
+## Validation
+
+```sh
+bun run check
+node --test tests/worker.test.mjs
+bun run build
+bunx wrangler deploy --dry-run
+```
+
+For a local scheduled refresh, run `bunx wrangler dev --test-scheduled` and request `/cdn-cgi/mf/scheduled`. Local KV is separate from production.
