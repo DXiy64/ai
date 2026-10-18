@@ -1,6 +1,7 @@
 <script setup>
 import Plotly from 'plotly.js-gl3d-dist-min';
-import data from '../../src/data.json';
+import fallbackData from '../../src/data.json';
+let data = fallbackData;
 import { onMounted, onBeforeUnmount, nextTick, ref, computed } from 'vue';
 
 const STORAGE_KEY = 'ai_model_chart_hidden_ids';
@@ -40,8 +41,8 @@ let hoveredPoint = null;
 const hiddenIds = ref(getStoredHiddenIds());
 const hiddenCount = computed(() => hiddenIds.value.size);
 
-const models = data.models.filter(m => [m.intelligence, m.cost, m.timeSeconds].every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0));
-const providers = [...new Set(models.map(m => m.creator))].sort();
+let models = data.models.filter(m => [m.intelligence, m.cost, m.timeSeconds].every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0));
+let providers = [...new Set(models.map(m => m.creator))].sort();
 const colors = {
   OpenAI: '#25805c',
   Anthropic: '#c16e47',
@@ -191,6 +192,17 @@ function handleDblClick(event) {
 onMounted(async () => {
   await nextTick();
   try {
+    try {
+      const response = await fetch('/api/data', { signal: AbortSignal.timeout(10000) });
+      if (!response.ok) throw new Error(`Data HTTP ${response.status}`);
+      const latest = await response.json();
+      if (!Array.isArray(latest.models) || latest.models.length < 100) throw new Error('Invalid model data');
+      data = latest;
+      models = data.models.filter(m => [m.intelligence, m.cost, m.timeSeconds].every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0));
+      providers = [...new Set(models.map(m => m.creator))].sort();
+    } catch (error) {
+      console.warn('Using bundled model snapshot', error);
+    }
     await Plotly.newPlot(chart.value, createTraces(), { ...getLayout(true), camera: initialCamera() }, config);
     ready = true;
 

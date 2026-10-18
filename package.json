@@ -8,7 +8,7 @@
     "build": "bun --bun nuxt generate",
     "preview": "bun --bun nuxt preview",
     "deploy": "bun run build && wrangler deploy",
-    "refresh-data": "bun scripts/refresh-data.mjs",
+    "refresh-data": "node --use-env-proxy scripts/refresh-data.mjs",
     "check": "bun scripts/check-data.mjs",
     "postinstall": "bun --bun nuxt prepare"
   },
@@ -16,12 +16,12 @@
     "node": ">=24.5.0"
   },
   "dependencies": {
-    "plotly.js-gl3d-dist-min": "^3.3.0",
-    "nuxt": "^4.4.8",
-    "vue": "^3.5.0"
+    "plotly.js-gl3d-dist-min": "^4.1.2",
+    "nuxt": "^4.6.2",
+    "vue": "^3.5.44"
   },
   "devDependencies": {
-    "wrangler": "^4.151.0"
+    "wrangler": "^4.151.1"
   },
   "packageManager": "bun@1.4.3"
 }

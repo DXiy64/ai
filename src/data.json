@@ -1,7 +1,7 @@
 {
   "source": "https://artificialanalysis.ai/models/",
   "methodology": "https://artificialanalysis.ai/methodology",
-  "retrievedAt": "2026-10-15T02:11:39.661Z",
+  "retrievedAt": "2026-10-17T14:02:04.036Z",
   "scope": "Full public model leaderboard including reasoning and effort variants; only complete three-axis models are plotted",
   "models": [
     {
@@ -26,7 +26,7 @@
       "color": "#34A853",
       "intelligence": 32.5983283695905,
       "cost": 3.6936902127611133,
-      "timeSeconds": 301.9109680272747,
+      "timeSeconds": 239.44509706822282,
       "openWeights": false,
       "estimated": false
     },
@@ -39,7 +39,7 @@
       "color": "#ff6900",
       "intelligence": 25.9868888896511,
       "cost": 0.054072740415336835,
-      "timeSeconds": 769.2006826240407,
+      "timeSeconds": 757.6946494024475,
       "openWeights": true,
       "estimated": false
     },
@@ -65,7 +65,7 @@
       "color": "#1f1f1f",
       "intelligence": 34.1548755585733,
       "cost": 0.1327768361714764,
-      "timeSeconds": 40.28311275247995,
+      "timeSeconds": 34.32902088351402,
       "openWeights": false,
       "estimated": false
     },
@@ -78,7 +78,7 @@
       "color": "#021B30",
       "intelligence": 10.7770340974661,
       "cost": 0.03862922542636743,
-      "timeSeconds": 56.226210913785295,
+      "timeSeconds": 58.509642803636325,
       "openWeights": false,
       "estimated": false
     },
@@ -208,7 +208,7 @@
       "color": "#cc785c",
       "intelligence": 40.838652287929,
       "cost": 0.48326378260543096,
-      "timeSeconds": 143.1070165127095,
+      "timeSeconds": 127.39833425703002,
       "openWeights": false,
       "estimated": false
     },
@@ -286,7 +286,7 @@
       "color": "#0089f4",
       "intelligence": 39.5758607970943,
       "cost": 0.9746948879931989,
-      "timeSeconds": 158.90641228769627,
+      "timeSeconds": 126.59885007571415,
       "openWeights": false,
       "estimated": false
     },
@@ -299,7 +299,7 @@
       "color": "#1f1f1f",
       "intelligence": 21.0124783424265,
       "cost": 0.009827249754655997,
-      "timeSeconds": 21.802031344497475,
+      "timeSeconds": 20.676435430206972,
       "openWeights": false,
       "estimated": false
     },
@@ -312,7 +312,7 @@
       "color": "#cc785c",
       "intelligence": 46.8163422014862,
       "cost": 2.371025320183763,
-      "timeSeconds": 270.76343520095327,
+      "timeSeconds": 226.830185560748,
       "openWeights": false,
       "estimated": false
     },
@@ -364,7 +364,7 @@
       "color": "#1f1f1f",
       "intelligence": 10.9643866525084,
       "cost": null,
-      "timeSeconds": 92.42391155575554,
+      "timeSeconds": 88.72298873562487,
       "openWeights": false,
       "estimated": false
     },
@@ -416,7 +416,7 @@
       "color": "#1f1f1f",
       "intelligence": 33.4731387646002,
       "cost": 0.2606419442090313,
-      "timeSeconds": 54.813237262995465,
+      "timeSeconds": 51.031403461923404,
       "openWeights": false,
       "estimated": false
     },
@@ -429,7 +429,7 @@
       "color": "#1f1f1f",
       "intelligence": 51.0377679093761,
       "cost": 0.39286117158850653,
-      "timeSeconds": 341.9077487297384,
+      "timeSeconds": 311.96034814671816,
       "openWeights": false,
       "estimated": false
     },
@@ -455,7 +455,7 @@
       "color": "#34A853",
       "intelligence": 22.1685424839812,
       "cost": 0.1927430131409478,
-      "timeSeconds": 37.01309348264956,
+      "timeSeconds": 37.69181357603565,
       "openWeights": false,
       "estimated": false
     },
@@ -468,8 +468,8 @@
       "color": "#00F5E7",
       "intelligence": 43.7343049141614,
       "cost": 1.0264068637684054,
-      "timeSeconds": 648.5185456416477,
-      "openWeights": false,
+      "timeSeconds": 596.4488898938346,
+      "openWeights": true,
       "estimated": false
     },
     {
@@ -559,7 +559,7 @@
       "color": "#0f62fe",
       "intelligence": 9.05588232376756,
       "cost": 0.005987243224456071,
-      "timeSeconds": 82.17283830871675,
+      "timeSeconds": 79.62951673563039,
       "openWeights": true,
       "estimated": false
     },
@@ -585,7 +585,7 @@
       "color": "#676767",
       "intelligence": 24.9847810999384,
       "cost": null,
-      "timeSeconds": 168.07821323803458,
+      "timeSeconds": 147.78999977614896,
       "openWeights": true,
       "estimated": false
     },
@@ -598,7 +598,7 @@
       "color": "#047AFE",
       "intelligence": 26.9791999742844,
       "cost": 0.799769615295709,
-      "timeSeconds": 824.0450535796573,
+      "timeSeconds": 999.8073738138244,
       "openWeights": true,
       "estimated": false
     },
@@ -611,7 +611,7 @@
       "color": "#2243e6",
       "intelligence": 11.4109820044475,
       "cost": 0.2617212405141733,
-      "timeSeconds": 92.29078746906295,
+      "timeSeconds": 99.18694890113987,
       "openWeights": true,
       "estimated": false
     },
@@ -650,7 +650,7 @@
       "color": "#ff7018",
       "intelligence": 18.4204249294815,
       "cost": 0.47457695829894075,
-      "timeSeconds": 316.25630492016865,
+      "timeSeconds": 316.43663089965844,
       "openWeights": true,
       "estimated": false
     },
@@ -702,7 +702,7 @@
       "color": "#0f62fe",
       "intelligence": 12.68315341158,
       "cost": 0.0716641484962871,
-      "timeSeconds": 666.3168680908198,
+      "timeSeconds": 653.242256002725,
       "openWeights": true,
       "estimated": false
     },
@@ -728,7 +728,7 @@
       "color": "#ff6900",
       "intelligence": 37.8843590141754,
       "cost": 0.06237567475410205,
-      "timeSeconds": 1262.5905427283772,
+      "timeSeconds": 1383.126341196061,
       "openWeights": true,
       "estimated": false
     },
@@ -780,7 +780,7 @@
       "color": "#cc785c",
       "intelligence": 49.6773552926939,
       "cost": 4.877843772646787,
-      "timeSeconds": 718.0155329518631,
+      "timeSeconds": 690.9476657436973,
       "openWeights": false,
       "estimated": false
     },
@@ -806,7 +806,7 @@
       "color": "#cc785c",
       "intelligence": 24.2638393579597,
       "cost": 0.5087545600633299,
-      "timeSeconds": 155.48049126687513,
+      "timeSeconds": 135.88068656829273,
       "openWeights": false,
       "estimated": false
     },
@@ -848,6 +848,19 @@
       "timeSeconds": null,
       "openWeights": true,
       "estimated": true
+    },
+    {
+      "id": "15c4cbd7-b9aa-42c8-9ce5-5abbde0e6963",
+      "slug": "solar-pro4",
+      "name": "Solar Pro 4",
+      "shortName": "Solar Pro 4",
+      "creator": "Upstage",
+      "color": "#7c59f5",
+      "intelligence": 26.5600314812231,
+      "cost": 0.7113065897513132,
+      "timeSeconds": 2410.835958187169,
+      "openWeights": false,
+      "estimated": false
     },
     {
       "id": "16149b9c-a1e9-4669-a5cb-ff3c00d78f89",
@@ -936,7 +949,7 @@
       "color": "#1c7ff8",
       "intelligence": 41.807466113455,
       "cost": 0.2835948232103717,
-      "timeSeconds": 768.4896259583543,
+      "timeSeconds": 728.1306391170631,
       "openWeights": true,
       "estimated": false
     },
@@ -949,7 +962,7 @@
       "color": "#1f1f1f",
       "intelligence": 34.5587320217785,
       "cost": 0.042183547923951084,
-      "timeSeconds": 247.2545908933726,
+      "timeSeconds": 246.530052057287,
       "openWeights": false,
       "estimated": false
     },
@@ -1003,19 +1016,6 @@
       "cost": null,
       "timeSeconds": null,
       "openWeights": true,
-      "estimated": true
-    },
-    {
-      "id": "1b64aa81-c223-4b8f-909b-82185a234765",
-      "slug": "solar-pro4",
-      "name": "Solar Pro 4",
-      "shortName": "Solar Pro 4",
-      "creator": "Upstage",
-      "color": "#7c59f5",
-      "intelligence": 28.1541333537469,
-      "cost": null,
-      "timeSeconds": null,
-      "openWeights": false,
       "estimated": true
     },
     {
@@ -1092,7 +1092,7 @@
       "color": "#D18EE2",
       "intelligence": 9.91462776590372,
       "cost": 0,
-      "timeSeconds": 288.8264147436309,
+      "timeSeconds": 200.20738143511522,
       "openWeights": true,
       "estimated": false
     },
@@ -1118,7 +1118,7 @@
       "color": "#1f1f1f",
       "intelligence": 38.3556437590607,
       "cost": 2.6339796841243297,
-      "timeSeconds": 286.1120966167027,
+      "timeSeconds": 239.65106214557886,
       "openWeights": false,
       "estimated": false
     },
@@ -1144,7 +1144,7 @@
       "color": "#1f1f1f",
       "intelligence": 52.3863277108782,
       "cost": 2.308795912269076,
-      "timeSeconds": 387.44548872540577,
+      "timeSeconds": 309.36918886431727,
       "openWeights": false,
       "estimated": false
     },
@@ -1196,7 +1196,7 @@
       "color": "#cc785c",
       "intelligence": 37.8240211671094,
       "cost": 0.07942671568737021,
-      "timeSeconds": 217.8333717490245,
+      "timeSeconds": 188.41792688215452,
       "openWeights": false,
       "estimated": false
     },
@@ -1209,7 +1209,7 @@
       "color": "#736cd3",
       "intelligence": 42.2166560223448,
       "cost": 1.2479664056943975,
-      "timeSeconds": 477.13368111862394,
+      "timeSeconds": 376.6041734222346,
       "openWeights": false,
       "estimated": false
     },
@@ -1222,7 +1222,7 @@
       "color": "#cc785c",
       "intelligence": 39.3543357992936,
       "cost": 1.098302324514437,
-      "timeSeconds": 178.21547600779542,
+      "timeSeconds": 166.71525385101606,
       "openWeights": false,
       "estimated": false
     },
@@ -1287,7 +1287,7 @@
       "color": "#ff7018",
       "intelligence": 15.5694009312969,
       "cost": 0.3247468637357143,
-      "timeSeconds": 126.94332155440868,
+      "timeSeconds": 117.79570963378136,
       "openWeights": true,
       "estimated": false
     },
@@ -1300,7 +1300,7 @@
       "color": "#ff6900",
       "intelligence": 21.8248678794953,
       "cost": 0.019069773544356065,
-      "timeSeconds": 874.6660069759968,
+      "timeSeconds": 827.2185907573358,
       "openWeights": true,
       "estimated": false
     },
@@ -1352,7 +1352,7 @@
       "color": "#cc785c",
       "intelligence": 38.1638712882576,
       "cost": 5.091163584815694,
-      "timeSeconds": 984.1720310272402,
+      "timeSeconds": 944.4824133214913,
       "openWeights": false,
       "estimated": false
     },
@@ -1391,7 +1391,7 @@
       "color": "#f32e02",
       "intelligence": 7.11735622656558,
       "cost": 0.02554707330972973,
-      "timeSeconds": 192.6122576520809,
+      "timeSeconds": 207.03634464237092,
       "openWeights": true,
       "estimated": false
     },
@@ -1404,7 +1404,7 @@
       "color": "#ff6900",
       "intelligence": 46.3242065310383,
       "cost": 0.13322318937213493,
-      "timeSeconds": 1428.5130985927249,
+      "timeSeconds": 1226.5794502959031,
       "openWeights": true,
       "estimated": false
     },
@@ -1430,7 +1430,7 @@
       "color": "#736cd3",
       "intelligence": 42.836322654063,
       "cost": 1.14381661681713,
-      "timeSeconds": 539.1586651768251,
+      "timeSeconds": 462.71054295061793,
       "openWeights": false,
       "estimated": false
     },
@@ -1443,7 +1443,7 @@
       "color": "#cc785c",
       "intelligence": 46.7533528066958,
       "cost": 0.8844498581005511,
-      "timeSeconds": 250.0098253112319,
+      "timeSeconds": 220.1491549456984,
       "openWeights": false,
       "estimated": false
     },
@@ -1482,7 +1482,7 @@
       "color": "#1f1f1f",
       "intelligence": 30.0938023419377,
       "cost": 0.18337295992969213,
-      "timeSeconds": 62.799069210832265,
+      "timeSeconds": 53.36644356726086,
       "openWeights": false,
       "estimated": false
     },
@@ -1495,7 +1495,7 @@
       "color": "#34A853",
       "intelligence": 16.0778962941864,
       "cost": 0.33028590601998487,
-      "timeSeconds": 94.55260978187003,
+      "timeSeconds": 85.45422955132358,
       "openWeights": false,
       "estimated": false
     },
@@ -1508,7 +1508,7 @@
       "color": "#736cd3",
       "intelligence": 46.3321770885625,
       "cost": 2.726106691786027,
-      "timeSeconds": 1014.8244590406923,
+      "timeSeconds": 696.0410043326353,
       "openWeights": false,
       "estimated": false
     },
@@ -1534,7 +1534,7 @@
       "color": "#EB3568",
       "intelligence": 29.2202932236316,
       "cost": 0.5076126905781733,
-      "timeSeconds": 502.1668577166677,
+      "timeSeconds": 526.1669862830457,
       "openWeights": true,
       "estimated": false
     },
@@ -1573,7 +1573,7 @@
       "color": "#1f1f1f",
       "intelligence": 16.7730881042515,
       "cost": 0.05349965791130692,
-      "timeSeconds": 110.73971834228833,
+      "timeSeconds": 122.22875343758004,
       "openWeights": false,
       "estimated": false
     },
@@ -1586,7 +1586,7 @@
       "color": "#76b900",
       "intelligence": 12.8572306217144,
       "cost": 0.09309918417597017,
-      "timeSeconds": 113.12813063977613,
+      "timeSeconds": 113.07621465796298,
       "openWeights": true,
       "estimated": false
     },
@@ -1716,7 +1716,7 @@
       "color": "#ff7018",
       "intelligence": 11.1961650827156,
       "cost": 0.21258346272934256,
-      "timeSeconds": 494.884606698707,
+      "timeSeconds": 523.7338373124094,
       "openWeights": true,
       "estimated": false
     },
@@ -1807,7 +1807,7 @@
       "color": "#D18EE2",
       "intelligence": 13.1335002685349,
       "cost": 0,
-      "timeSeconds": 114.60120725504603,
+      "timeSeconds": 120.81225375315472,
       "openWeights": true,
       "estimated": false
     },
@@ -1820,7 +1820,7 @@
       "color": "#1f1f1f",
       "intelligence": 52.673669395513,
       "cost": 3.2575003134834164,
-      "timeSeconds": 621.9583104034299,
+      "timeSeconds": 472.45127309530847,
       "openWeights": false,
       "estimated": false
     },
@@ -1833,7 +1833,7 @@
       "color": "#cc785c",
       "intelligence": 57.6223698102963,
       "cost": 5.982012019521066,
-      "timeSeconds": 797.4806052095661,
+      "timeSeconds": 784.1383339726899,
       "openWeights": false,
       "estimated": false
     },
@@ -2028,7 +2028,7 @@
       "color": "#f32e02",
       "intelligence": 38.3770408917494,
       "cost": 1.1341017484612892,
-      "timeSeconds": null,
+      "timeSeconds": 733.9607124925003,
       "openWeights": false,
       "estimated": false
     },
@@ -2067,7 +2067,7 @@
       "color": "#ff7018",
       "intelligence": 20.1502427055595,
       "cost": 2.487757391889078,
-      "timeSeconds": 634.503348910611,
+      "timeSeconds": 628.3701178015469,
       "openWeights": true,
       "estimated": false
     },
@@ -2083,6 +2083,19 @@
       "timeSeconds": null,
       "openWeights": false,
       "estimated": true
+    },
+    {
+      "id": "3661c8fb-caf7-4118-aa18-65b84fea8e44",
+      "slug": "muse-spark-open",
+      "name": "Muse Spark Open (Xhigh)",
+      "shortName": "Muse Spark Open (xhigh)",
+      "creator": "Meta",
+      "color": "#0089f4",
+      "intelligence": 38.8666662997805,
+      "cost": 0.8435187802958677,
+      "timeSeconds": 309.2437848842842,
+      "openWeights": true,
+      "estimated": false
     },
     {
       "id": "36667da0-9222-4967-adbb-f7efa15ad213",
@@ -2118,8 +2131,8 @@
       "creator": "OpenAI",
       "color": "#1f1f1f",
       "intelligence": 8.9675171856126,
-      "cost": 0.012460640242179213,
-      "timeSeconds": 75.01212372354979,
+      "cost": 0.011451402590850306,
+      "timeSeconds": 75.53919899055376,
       "openWeights": true,
       "estimated": false
     },
@@ -2210,7 +2223,7 @@
       "color": "#cc785c",
       "intelligence": 48.9206162609523,
       "cost": 2.982597436096585,
-      "timeSeconds": 341.40727990972823,
+      "timeSeconds": 289.6669514493456,
       "openWeights": false,
       "estimated": false
     },
@@ -2223,7 +2236,7 @@
       "color": "#1f1f1f",
       "intelligence": 50.2377777519769,
       "cost": 0.31914442375664703,
-      "timeSeconds": 267.47553376376834,
+      "timeSeconds": 232.78364093284654,
       "openWeights": false,
       "estimated": false
     },
@@ -2327,7 +2340,7 @@
       "color": "#cc785c",
       "intelligence": 53.3549259623252,
       "cost": 7.629706364004841,
-      "timeSeconds": 684.6921509734253,
+      "timeSeconds": 714.9336174889438,
       "openWeights": false,
       "estimated": false
     },
@@ -2366,7 +2379,7 @@
       "color": "#f32e02",
       "intelligence": 11.2675794141469,
       "cost": 0.01504679036588765,
-      "timeSeconds": 78.64999326693648,
+      "timeSeconds": 76.21363077070983,
       "openWeights": true,
       "estimated": false
     },
@@ -2418,7 +2431,7 @@
       "color": "#cc785c",
       "intelligence": 41.2489304677024,
       "cost": 0.12378561092096102,
-      "timeSeconds": 295.380878874218,
+      "timeSeconds": 288.7405787503487,
       "openWeights": false,
       "estimated": false
     },
@@ -2457,7 +2470,7 @@
       "color": "#1f1f1f",
       "intelligence": 37.3244239690841,
       "cost": 0.17829726152289094,
-      "timeSeconds": 351.21311422673426,
+      "timeSeconds": 315.5002412876548,
       "openWeights": false,
       "estimated": false
     },
@@ -2470,7 +2483,7 @@
       "color": "#cc785c",
       "intelligence": 29.4523685891139,
       "cost": 0.02445936101890973,
-      "timeSeconds": 72.13221539998531,
+      "timeSeconds": 62.514280708613654,
       "openWeights": false,
       "estimated": false
     },
@@ -2574,7 +2587,7 @@
       "color": "#f32e02",
       "intelligence": 6.96351219722855,
       "cost": 0.10915934152950205,
-      "timeSeconds": 185.64543738148205,
+      "timeSeconds": 218.48185402215847,
       "openWeights": true,
       "estimated": false
     },
@@ -2587,7 +2600,7 @@
       "color": "#2243e6",
       "intelligence": 8.48686760841828,
       "cost": 0.019751793975774472,
-      "timeSeconds": 54.86403969491744,
+      "timeSeconds": 43.136588460429486,
       "openWeights": true,
       "estimated": false
     },
@@ -2600,7 +2613,7 @@
       "color": "#cc785c",
       "intelligence": 42.3077781466168,
       "cost": 0.551180473909146,
-      "timeSeconds": 86.62913479822512,
+      "timeSeconds": 79.80751220840723,
       "openWeights": false,
       "estimated": false
     },
@@ -2795,7 +2808,7 @@
       "color": "#f32e02",
       "intelligence": 9.26608812860467,
       "cost": 0.031125992260624492,
-      "timeSeconds": 72.26630887882627,
+      "timeSeconds": 69.39664137453406,
       "openWeights": true,
       "estimated": false
     },
@@ -2886,7 +2899,7 @@
       "color": "#EB3568",
       "intelligence": 22.7578150287271,
       "cost": null,
-      "timeSeconds": 373.5071615873846,
+      "timeSeconds": 321.63493208642285,
       "openWeights": true,
       "estimated": false
     },
@@ -3003,7 +3016,7 @@
       "color": "#047AFE",
       "intelligence": 30.0666987529068,
       "cost": 1.1463056165227514,
-      "timeSeconds": 259.68872031144156,
+      "timeSeconds": 285.6881002852843,
       "openWeights": true,
       "estimated": false
     },
@@ -3068,7 +3081,7 @@
       "color": "#1f1f1f",
       "intelligence": 42.4004513642985,
       "cost": 0.3728406839161857,
-      "timeSeconds": 117.61480631574835,
+      "timeSeconds": 100.80407398799277,
       "openWeights": false,
       "estimated": false
     },
@@ -3223,8 +3236,8 @@
       "creator": "Meta",
       "color": "#0089f4",
       "intelligence": 17.4754176089465,
-      "cost": 0.05354887073483047,
-      "timeSeconds": 118.19892125156552,
+      "cost": 0.05755125039078422,
+      "timeSeconds": 108.24667915984519,
       "openWeights": true,
       "estimated": false
     },
@@ -3237,7 +3250,7 @@
       "color": "#1f1f1f",
       "intelligence": 25.0358741440784,
       "cost": 0.015598049609820011,
-      "timeSeconds": 36.82524867263329,
+      "timeSeconds": 36.615691455107104,
       "openWeights": false,
       "estimated": false
     },
@@ -3250,7 +3263,7 @@
       "color": "#736cd3",
       "intelligence": 46.4465506302286,
       "cost": 3.738325952106939,
-      "timeSeconds": 1094.189500816501,
+      "timeSeconds": 824.835058332112,
       "openWeights": false,
       "estimated": false
     },
@@ -3276,7 +3289,7 @@
       "color": "#34A853",
       "intelligence": 15.554288713025,
       "cost": 0.06018072627659897,
-      "timeSeconds": 35.69356594464044,
+      "timeSeconds": 32.495313560431704,
       "openWeights": false,
       "estimated": false
     },
@@ -3380,7 +3393,7 @@
       "color": "#1c7ff8",
       "intelligence": 26.0585912980095,
       "cost": 1.0192564984972659,
-      "timeSeconds": 572.3846190960807,
+      "timeSeconds": 534.23255979661,
       "openWeights": true,
       "estimated": false
     },
@@ -3418,8 +3431,8 @@
       "creator": "NVIDIA",
       "color": "#76b900",
       "intelligence": 22.9279123422858,
-      "cost": 0.5975984799533358,
-      "timeSeconds": 176.05910678649806,
+      "cost": 0.5769597489420976,
+      "timeSeconds": 184.45538971084093,
       "openWeights": true,
       "estimated": false
     },
@@ -3445,7 +3458,7 @@
       "color": "#2adb65",
       "intelligence": 19.1123256610623,
       "cost": 0.14624850952440743,
-      "timeSeconds": 328.8641266167347,
+      "timeSeconds": 335.1625869164864,
       "openWeights": true,
       "estimated": false
     },
@@ -3614,7 +3627,7 @@
       "color": "#ff7018",
       "intelligence": 40.1528623585941,
       "cost": 2.6699848505343478,
-      "timeSeconds": 1180.8131880228564,
+      "timeSeconds": 1220.5201238347167,
       "openWeights": false,
       "estimated": false
     },
@@ -3770,7 +3783,7 @@
       "color": "#7c59f5",
       "intelligence": 24.0522018844171,
       "cost": 0.3655852120863359,
-      "timeSeconds": 1034.3322914075816,
+      "timeSeconds": 1079.1101594611744,
       "openWeights": false,
       "estimated": false
     },
@@ -3783,7 +3796,7 @@
       "color": "#76b900",
       "intelligence": 12.8287575290979,
       "cost": 1.6390663672616101,
-      "timeSeconds": 729.1282732375643,
+      "timeSeconds": 735.689431065392,
       "openWeights": true,
       "estimated": false
     },
@@ -3796,7 +3809,7 @@
       "color": "#1f1f1f",
       "intelligence": 18.4678465935701,
       "cost": 0.011345057120527267,
-      "timeSeconds": 33.680470391889955,
+      "timeSeconds": 33.17934727081012,
       "openWeights": false,
       "estimated": false
     },
@@ -3874,7 +3887,7 @@
       "color": "#ff7018",
       "intelligence": 27.5508228231586,
       "cost": 1.133063774030521,
-      "timeSeconds": 1106.4478921262123,
+      "timeSeconds": 1110.695573793493,
       "openWeights": true,
       "estimated": false
     },
@@ -3913,7 +3926,7 @@
       "color": "#f32e02",
       "intelligence": 4.83760020546443,
       "cost": 0.007846860809830004,
-      "timeSeconds": 55.46396509397347,
+      "timeSeconds": 57.686005495595225,
       "openWeights": true,
       "estimated": false
     },
@@ -3944,6 +3957,19 @@
       "estimated": true
     },
     {
+      "id": "69468cce-7b5c-414a-b498-41df4c34df85",
+      "slug": "reflection-beam",
+      "name": "Beam 1.0",
+      "shortName": "Beam 1.0",
+      "creator": "Reflection",
+      "color": "#195428",
+      "intelligence": 30.3334426348039,
+      "cost": 0.5657163841991104,
+      "timeSeconds": 83.10001201963128,
+      "openWeights": true,
+      "estimated": false
+    },
+    {
       "id": "69534bed-2ffd-4235-832b-e20a810333ab",
       "slug": "qwen3-7-max",
       "name": "Qwen3.7 Max",
@@ -3952,7 +3978,7 @@
       "color": "#ff7018",
       "intelligence": 29.4571634255623,
       "cost": 1.1472961597972207,
-      "timeSeconds": 162.23686032819558,
+      "timeSeconds": 134.53255868564736,
       "openWeights": false,
       "estimated": false
     },
@@ -4017,7 +4043,7 @@
       "color": "#1f1f1f",
       "intelligence": 33.8043604432432,
       "cost": 0.9016588021523384,
-      "timeSeconds": 106.6238928455776,
+      "timeSeconds": 106.49206633725872,
       "openWeights": false,
       "estimated": false
     },
@@ -4056,7 +4082,7 @@
       "color": "#4fb5ff",
       "intelligence": 22.5965828940594,
       "cost": null,
-      "timeSeconds": 211.4632990132247,
+      "timeSeconds": 195.96978481152524,
       "openWeights": true,
       "estimated": false
     },
@@ -4147,7 +4173,7 @@
       "color": "#1f1f1f",
       "intelligence": 39.2363585889147,
       "cost": 0.5049926304382959,
-      "timeSeconds": 108.16137128888253,
+      "timeSeconds": 96.14385714232688,
       "openWeights": false,
       "estimated": false
     },
@@ -4186,7 +4212,7 @@
       "color": "#1f1f1f",
       "intelligence": 38.1245186869738,
       "cost": 0.06782295669812205,
-      "timeSeconds": 435.0614749039833,
+      "timeSeconds": 420.95098252888437,
       "openWeights": false,
       "estimated": false
     },
@@ -4251,7 +4277,7 @@
       "color": "#cc785c",
       "intelligence": 48.1219182595908,
       "cost": 3.6132670078004714,
-      "timeSeconds": 554.5077911690347,
+      "timeSeconds": 520.8507403504783,
       "openWeights": false,
       "estimated": false
     },
@@ -4264,7 +4290,7 @@
       "color": "#f32e02",
       "intelligence": 6.04436817215002,
       "cost": 0.01943640228162961,
-      "timeSeconds": 83.84758286841812,
+      "timeSeconds": 67.044183132271,
       "openWeights": true,
       "estimated": false
     },
@@ -4316,7 +4342,7 @@
       "color": "#676767",
       "intelligence": 25.6582584411942,
       "cost": 0.0894649973284348,
-      "timeSeconds": 133.18215739483824,
+      "timeSeconds": 133.9227914057271,
       "openWeights": true,
       "estimated": false
     },
@@ -4381,7 +4407,7 @@
       "color": "#2243e6",
       "intelligence": 24.6733593924318,
       "cost": 0.14670039195227308,
-      "timeSeconds": 201.09750978147218,
+      "timeSeconds": 209.04452778886812,
       "openWeights": true,
       "estimated": false
     },
@@ -4420,7 +4446,7 @@
       "color": "#2243e6",
       "intelligence": 9.72000501684011,
       "cost": 0.02113171101787361,
-      "timeSeconds": 23.727362132608082,
+      "timeSeconds": 20.32826141706579,
       "openWeights": true,
       "estimated": false
     },
@@ -4472,7 +4498,7 @@
       "color": "#021B30",
       "intelligence": 12.3408453757638,
       "cost": 0.11668472036336801,
-      "timeSeconds": 14.314008038497997,
+      "timeSeconds": 8.636512134241498,
       "openWeights": false,
       "estimated": false
     },
@@ -4511,7 +4537,7 @@
       "color": "#76b900",
       "intelligence": 8.8961440122188,
       "cost": 0.01675160944475661,
-      "timeSeconds": 105.86607468358527,
+      "timeSeconds": 106.24450163620207,
       "openWeights": true,
       "estimated": false
     },
@@ -4524,7 +4550,7 @@
       "color": "#2243e6",
       "intelligence": 34.8390628035969,
       "cost": 0.314372044499279,
-      "timeSeconds": 280.7643607254436,
+      "timeSeconds": 280.67733391122897,
       "openWeights": false,
       "estimated": false
     },
@@ -4589,7 +4615,7 @@
       "color": "#34A853",
       "intelligence": 33.9785928920714,
       "cost": 1.600530533263267,
-      "timeSeconds": 237.2411377289009,
+      "timeSeconds": 180.95844385075574,
       "openWeights": false,
       "estimated": false
     },
@@ -4628,7 +4654,7 @@
       "color": "#736cd3",
       "intelligence": 38.8121153240657,
       "cost": 0.8806608417078763,
-      "timeSeconds": 482.42137004261684,
+      "timeSeconds": 494.08961116606633,
       "openWeights": false,
       "estimated": false
     },
@@ -4719,7 +4745,7 @@
       "color": "#cc785c",
       "intelligence": 43.3950199670746,
       "cost": 0.21276971216992022,
-      "timeSeconds": 423.1773428383697,
+      "timeSeconds": 428.73741740101076,
       "openWeights": false,
       "estimated": false
     },
@@ -4732,8 +4758,21 @@
       "color": "#1f1f1f",
       "intelligence": 32.9282054150837,
       "cost": 0.02903157640372802,
-      "timeSeconds": 162.1651952781807,
+      "timeSeconds": 176.34948460345888,
       "openWeights": false,
+      "estimated": false
+    },
+    {
+      "id": "7d2aa050-888e-4c27-a92d-10337a4dfb3a",
+      "slug": "nemotron-3-5-bolt-74b-a9b",
+      "name": "Nemotron 3.5 Bolt 74B-A9B",
+      "shortName": "Nemotron 3.5 Bolt 74B-A9B",
+      "creator": "NVIDIA",
+      "color": "#76b900",
+      "intelligence": 21.4072054842003,
+      "cost": null,
+      "timeSeconds": null,
+      "openWeights": true,
       "estimated": false
     },
     {
@@ -4758,7 +4797,7 @@
       "color": "#ff7018",
       "intelligence": 26.2047978189896,
       "cost": 1.0482225365160391,
-      "timeSeconds": 926.1175067150365,
+      "timeSeconds": 830.3934422521933,
       "openWeights": true,
       "estimated": false
     },
@@ -4784,7 +4823,7 @@
       "color": "#4fb5ff",
       "intelligence": 11.0636233769305,
       "cost": 0,
-      "timeSeconds": 4168.249003440601,
+      "timeSeconds": 4535.0043530011535,
       "openWeights": true,
       "estimated": false
     },
@@ -4823,7 +4862,7 @@
       "color": "#ff8a75",
       "intelligence": 6.3469533538601,
       "cost": 0.05015755586591194,
-      "timeSeconds": 3.127186858097762,
+      "timeSeconds": 3.2539023449867375,
       "openWeights": false,
       "estimated": false
     },
@@ -4875,7 +4914,7 @@
       "color": "#1f1f1f",
       "intelligence": 34.2376558067555,
       "cost": 0.3378727947949101,
-      "timeSeconds": 122.68857263748336,
+      "timeSeconds": 102.16979485913689,
       "openWeights": false,
       "estimated": false
     },
@@ -4979,7 +5018,7 @@
       "color": "#2243e6",
       "intelligence": 35.9967791278402,
       "cost": 0.6740219040435134,
-      "timeSeconds": 483.5773771585982,
+      "timeSeconds": 600.7453629954123,
       "openWeights": true,
       "estimated": false
     },
@@ -5057,7 +5096,7 @@
       "color": "#ff7018",
       "intelligence": 18.2289900189843,
       "cost": 0.4750534562511306,
-      "timeSeconds": 265.87627818273506,
+      "timeSeconds": 211.92652022554518,
       "openWeights": true,
       "estimated": false
     },
@@ -5070,7 +5109,7 @@
       "color": "#1f1f1f",
       "intelligence": 34.555348822309,
       "cost": 0.085342806135728,
-      "timeSeconds": 199.45077646143295,
+      "timeSeconds": 185.86991727517145,
       "openWeights": false,
       "estimated": false
     },
@@ -5148,7 +5187,7 @@
       "color": "#2243e6",
       "intelligence": 24.3839569152521,
       "cost": 0.10256688240478459,
-      "timeSeconds": 829.0868529761343,
+      "timeSeconds": 791.5327825298634,
       "openWeights": true,
       "estimated": false
     },
@@ -5187,7 +5226,7 @@
       "color": "#34A853",
       "intelligence": 40.9262321765904,
       "cost": 1.2427947606950427,
-      "timeSeconds": 507.0028065888999,
+      "timeSeconds": 473.98208934413674,
       "openWeights": false,
       "estimated": false
     },
@@ -5200,7 +5239,7 @@
       "color": "#1f1f1f",
       "intelligence": 42.3461010420519,
       "cost": 0.807982690134498,
-      "timeSeconds": 174.68020073066788,
+      "timeSeconds": 162.52334214124602,
       "openWeights": false,
       "estimated": false
     },
@@ -5239,7 +5278,7 @@
       "color": "#ff7018",
       "intelligence": 21.4279902240782,
       "cost": 0.621236893699357,
-      "timeSeconds": 505.6472824757434,
+      "timeSeconds": 491.4531305811209,
       "openWeights": true,
       "estimated": false
     },
@@ -5278,7 +5317,7 @@
       "color": "#047AFE",
       "intelligence": 25.8121062401836,
       "cost": 0.541190247118529,
-      "timeSeconds": 510.68476526625324,
+      "timeSeconds": 571.7010737747661,
       "openWeights": true,
       "estimated": false
     },
@@ -5304,7 +5343,7 @@
       "color": "#ff7018",
       "intelligence": 39.9461723105325,
       "cost": 2.1551619442434675,
-      "timeSeconds": 1360.9270227840227,
+      "timeSeconds": 1356.1455554300749,
       "openWeights": true,
       "estimated": false
     },
@@ -5382,7 +5421,7 @@
       "color": "#736cd3",
       "intelligence": 13.9926809505055,
       "cost": 0.16974590796834474,
-      "timeSeconds": 98.03461851801049,
+      "timeSeconds": 103.77971901306441,
       "openWeights": false,
       "estimated": false
     },
@@ -5395,7 +5434,7 @@
       "color": "#cc785c",
       "intelligence": 20.6661943537112,
       "cost": 0.5565810659988739,
-      "timeSeconds": 345.34318024078476,
+      "timeSeconds": 273.64490384953166,
       "openWeights": false,
       "estimated": false
     },
@@ -5446,8 +5485,8 @@
       "creator": "Meta",
       "color": "#0089f4",
       "intelligence": 9.29902687437199,
-      "cost": 0.03819743472822281,
-      "timeSeconds": 34.74038918861336,
+      "cost": 0.038299797707028495,
+      "timeSeconds": 36.04673660016312,
       "openWeights": true,
       "estimated": false
     },
@@ -5525,7 +5564,7 @@
       "color": "#736cd3",
       "intelligence": 24.8801191398002,
       "cost": 0.20537871205068303,
-      "timeSeconds": 189.54195235417689,
+      "timeSeconds": 187.12722216678506,
       "openWeights": false,
       "estimated": false
     },
@@ -5564,7 +5603,7 @@
       "color": "#f32e02",
       "intelligence": 5.47767370454416,
       "cost": 0.011086416592507111,
-      "timeSeconds": 71.62919907714499,
+      "timeSeconds": 75.58477884685854,
       "openWeights": true,
       "estimated": false
     },
@@ -5577,7 +5616,7 @@
       "color": "#cc785c",
       "intelligence": 51.8955544183089,
       "cost": 2.0120345801545785,
-      "timeSeconds": 468.8779892525143,
+      "timeSeconds": 428.78576594540556,
       "openWeights": false,
       "estimated": false
     },
@@ -5629,7 +5668,7 @@
       "color": "#cc785c",
       "intelligence": 41.7899103794639,
       "cost": 4.080976976477826,
-      "timeSeconds": 780.4095765039501,
+      "timeSeconds": 697.4839213395855,
       "openWeights": false,
       "estimated": false
     },
@@ -5642,7 +5681,7 @@
       "color": "#0089f4",
       "intelligence": 48.0923107719685,
       "cost": 1.6048932100125866,
-      "timeSeconds": 466.38993692140997,
+      "timeSeconds": 457.97522667829264,
       "openWeights": false,
       "estimated": false
     },
@@ -5655,7 +5694,7 @@
       "color": "#cc785c",
       "intelligence": 34.384211557212,
       "cost": 2.8720437784323134,
-      "timeSeconds": 625.8531434644718,
+      "timeSeconds": 538.7655319542833,
       "openWeights": false,
       "estimated": false
     },
@@ -5668,7 +5707,7 @@
       "color": "#ff7018",
       "intelligence": 39.8223021864741,
       "cost": 0.3721760025302965,
-      "timeSeconds": 1747.6846086577434,
+      "timeSeconds": 1624.703279883428,
       "openWeights": true,
       "estimated": false
     },
@@ -5681,7 +5720,7 @@
       "color": "#cc785c",
       "intelligence": 53.2032587538944,
       "cost": 5.978304247388257,
-      "timeSeconds": 608.0584529901029,
+      "timeSeconds": 591.8856235318568,
       "openWeights": false,
       "estimated": false
     },
@@ -5694,7 +5733,7 @@
       "color": "#1f1f1f",
       "intelligence": 20.7797013584503,
       "cost": 0.13972397093498629,
-      "timeSeconds": 34.673495470077675,
+      "timeSeconds": 31.50693377353521,
       "openWeights": false,
       "estimated": false
     },
@@ -5746,7 +5785,7 @@
       "color": "#cc785c",
       "intelligence": 51.1515708852237,
       "cost": 3.912526554325558,
-      "timeSeconds": 450.2117719175135,
+      "timeSeconds": 405.119876714737,
       "openWeights": false,
       "estimated": false
     },
@@ -5785,7 +5824,7 @@
       "color": "#1f1f1f",
       "intelligence": 37.9513370742927,
       "cost": 0.6317911346924275,
-      "timeSeconds": 209.81727527595632,
+      "timeSeconds": 177.39665713514992,
       "openWeights": false,
       "estimated": false
     },
@@ -5928,7 +5967,7 @@
       "color": "#1f1f1f",
       "intelligence": 47.7833271274065,
       "cost": 0.21370088267875537,
-      "timeSeconds": 178.3144979041493,
+      "timeSeconds": 169.17573125625356,
       "openWeights": false,
       "estimated": false
     },
@@ -5967,7 +6006,7 @@
       "color": "#1f1f1f",
       "intelligence": 45.7819243120341,
       "cost": 0.8175139285656057,
-      "timeSeconds": 104.94651553727165,
+      "timeSeconds": 82.05274981078156,
       "openWeights": false,
       "estimated": false
     },
@@ -6019,8 +6058,8 @@
       "color": "#4fb5ff",
       "intelligence": 41.0906200397391,
       "cost": 0.9996439559293879,
-      "timeSeconds": 409.8201500360729,
-      "openWeights": false,
+      "timeSeconds": 394.8643955439377,
+      "openWeights": true,
       "estimated": false
     },
     {
@@ -6032,7 +6071,7 @@
       "color": "#cc785c",
       "intelligence": 16.8822352291856,
       "cost": 0.27682075830176456,
-      "timeSeconds": 160.8904156234079,
+      "timeSeconds": 147.95814027232177,
       "openWeights": false,
       "estimated": false
     },
@@ -6136,7 +6175,7 @@
       "color": "#ff7018",
       "intelligence": 25.1622215821984,
       "cost": 0.21702592259078568,
-      "timeSeconds": 616.9627974874867,
+      "timeSeconds": 582.6456848478301,
       "openWeights": false,
       "estimated": false
     },
@@ -6201,7 +6240,7 @@
       "color": "#1f1f1f",
       "intelligence": 32.1196453501091,
       "cost": 0.043981552251920096,
-      "timeSeconds": 121.96135072031304,
+      "timeSeconds": 110.89130652010189,
       "openWeights": false,
       "estimated": false
     },
@@ -6331,7 +6370,7 @@
       "color": "#0089f4",
       "intelligence": 6.45126865234633,
       "cost": 0.1121761076625774,
-      "timeSeconds": 28.741366225592557,
+      "timeSeconds": 22.23380474389276,
       "openWeights": true,
       "estimated": false
     },
@@ -6344,7 +6383,7 @@
       "color": "#0f62fe",
       "intelligence": 11.0812712267815,
       "cost": 0.023596091491929188,
-      "timeSeconds": 312.88414077313865,
+      "timeSeconds": 234.0957332829285,
       "openWeights": true,
       "estimated": false
     },
@@ -6396,7 +6435,7 @@
       "color": "#cc785c",
       "intelligence": 34.4646519474657,
       "cost": 0.04703084793955566,
-      "timeSeconds": 136.2888838445424,
+      "timeSeconds": 116.73941585994575,
       "openWeights": false,
       "estimated": false
     },
@@ -6435,7 +6474,7 @@
       "color": "#ff7018",
       "intelligence": 33.6762858057476,
       "cost": 1.0074896941565943,
-      "timeSeconds": 1334.2765212320476,
+      "timeSeconds": 1263.086887195242,
       "openWeights": true,
       "estimated": false
     },
@@ -6487,7 +6526,7 @@
       "color": "#ff7018",
       "intelligence": 45.4152084980521,
       "cost": 5.408509428374016,
-      "timeSeconds": 2017.1219000680812,
+      "timeSeconds": 2153.9609955397946,
       "openWeights": false,
       "estimated": false
     },
@@ -6500,7 +6539,7 @@
       "color": "#1f1f1f",
       "intelligence": 36.9793737887731,
       "cost": 1.541289049705234,
-      "timeSeconds": 193.08619492250762,
+      "timeSeconds": 153.07627374723185,
       "openWeights": false,
       "estimated": false
     },
@@ -6513,7 +6552,7 @@
       "color": "#cc785c",
       "intelligence": 56.0001286580794,
       "cost": 5.4608525948098325,
-      "timeSeconds": 938.4795901621243,
+      "timeSeconds": 903.5378454501097,
       "openWeights": false,
       "estimated": false
     },
@@ -6539,7 +6578,7 @@
       "color": "#34A853",
       "intelligence": 39.0594566404896,
       "cost": 0.9253359372385677,
-      "timeSeconds": 185.32528221624338,
+      "timeSeconds": 211.6334618585382,
       "openWeights": false,
       "estimated": false
     },
@@ -6552,7 +6591,7 @@
       "color": "#5CB9FF",
       "intelligence": 25.2972775731571,
       "cost": 0.07179763081859954,
-      "timeSeconds": 528.6527249124443,
+      "timeSeconds": 500.7792337899654,
       "openWeights": true,
       "estimated": false
     },
@@ -6565,7 +6604,7 @@
       "color": "#1f1f1f",
       "intelligence": 51.8332597011541,
       "cost": 0.7241670655535033,
-      "timeSeconds": 797.2702010790399,
+      "timeSeconds": 586.5001310980398,
       "openWeights": false,
       "estimated": false
     },
@@ -6747,7 +6786,7 @@
       "color": "#008c8d",
       "intelligence": 10.8242425924218,
       "cost": 0.11883788334567012,
-      "timeSeconds": 122.7940154064083,
+      "timeSeconds": 127.71651018560686,
       "openWeights": true,
       "estimated": false
     },
@@ -6773,7 +6812,7 @@
       "color": "#7c59f5",
       "intelligence": 7.81551744502774,
       "cost": 0.07942705217350178,
-      "timeSeconds": 267.432672054073,
+      "timeSeconds": 262.27430221113576,
       "openWeights": false,
       "estimated": false
     },
@@ -6786,7 +6825,7 @@
       "color": "#cc785c",
       "intelligence": 50.7771115797629,
       "cost": 5.858396237036018,
-      "timeSeconds": 807.8063381541183,
+      "timeSeconds": 783.8847200536627,
       "openWeights": false,
       "estimated": false
     },
@@ -6825,7 +6864,7 @@
       "color": "#cc785c",
       "intelligence": 31.6623246664651,
       "cost": 1.7924692244111728,
-      "timeSeconds": 445.02567197232776,
+      "timeSeconds": 372.80918581264706,
       "openWeights": false,
       "estimated": false
     },
@@ -6851,7 +6890,7 @@
       "color": "#1f1f1f",
       "intelligence": 24.0682169231964,
       "cost": 0.4473810333705224,
-      "timeSeconds": 216.61286416925356,
+      "timeSeconds": 202.75649257827638,
       "openWeights": false,
       "estimated": false
     },
@@ -6864,7 +6903,7 @@
       "color": "#1521a9",
       "intelligence": 30.5015302696723,
       "cost": 0,
-      "timeSeconds": 110.17058435198618,
+      "timeSeconds": null,
       "openWeights": true,
       "estimated": false
     },
@@ -6877,7 +6916,7 @@
       "color": "#cc785c",
       "intelligence": 35.8681594577587,
       "cost": 0.3451610270666562,
-      "timeSeconds": 95.90706908491256,
+      "timeSeconds": 86.05624594919401,
       "openWeights": false,
       "estimated": false
     },
@@ -6890,7 +6929,7 @@
       "color": "#34A853",
       "intelligence": 29.7185656132261,
       "cost": 1.2985855086120641,
-      "timeSeconds": 137.1910564208242,
+      "timeSeconds": 123.51565861312928,
       "openWeights": false,
       "estimated": false
     },
@@ -6955,7 +6994,7 @@
       "color": "#1f1f1f",
       "intelligence": 42.0829248239494,
       "cost": 1.3987235612691513,
-      "timeSeconds": 362.4072331038319,
+      "timeSeconds": 282.7081150015587,
       "openWeights": false,
       "estimated": false
     },
@@ -7007,7 +7046,7 @@
       "color": "#2243e6",
       "intelligence": 30.4496601315524,
       "cost": 0.12152059767597723,
-      "timeSeconds": 471.77984468179227,
+      "timeSeconds": 488.37681481764383,
       "openWeights": true,
       "estimated": false
     },
@@ -7033,7 +7072,7 @@
       "color": "#1f1f1f",
       "intelligence": 21.5261980080866,
       "cost": 0.004516607569410252,
-      "timeSeconds": 18.001055924903397,
+      "timeSeconds": 17.32149742250629,
       "openWeights": false,
       "estimated": false
     },
@@ -7046,7 +7085,7 @@
       "color": "#736cd3",
       "intelligence": 35.1246953482174,
       "cost": 0.37578773607022314,
-      "timeSeconds": 201.15400444667893,
+      "timeSeconds": 182.0049303511044,
       "openWeights": false,
       "estimated": false
     },
@@ -7150,7 +7189,7 @@
       "color": "#1f1f1f",
       "intelligence": 26.0135173401368,
       "cost": 0.6914853678439488,
-      "timeSeconds": 33.59094154504656,
+      "timeSeconds": 33.32214627585881,
       "openWeights": false,
       "estimated": false
     },
@@ -7189,7 +7228,7 @@
       "color": "#1f1f1f",
       "intelligence": 47.6305176437724,
       "cost": 1.0446616686054255,
-      "timeSeconds": 318.0839463588758,
+      "timeSeconds": 284.5717890870477,
       "openWeights": false,
       "estimated": false
     },
@@ -7332,7 +7371,7 @@
       "color": "#736cd3",
       "intelligence": 44.3113073012592,
       "cost": 1.4848449196688633,
-      "timeSeconds": 709.9450401133449,
+      "timeSeconds": 559.5344717999674,
       "openWeights": false,
       "estimated": false
     },
@@ -7397,7 +7436,7 @@
       "color": "#1c7ff8",
       "intelligence": 34.2990078159643,
       "cost": 0.8522174973386498,
-      "timeSeconds": 445.3396804672647,
+      "timeSeconds": 425.24338428553926,
       "openWeights": true,
       "estimated": false
     },
@@ -7423,7 +7462,7 @@
       "color": "#1f1f1f",
       "intelligence": 27.496203401716,
       "cost": 0.1444617614290821,
-      "timeSeconds": 42.093877803142014,
+      "timeSeconds": 41.132359940368026,
       "openWeights": false,
       "estimated": false
     },
@@ -7449,7 +7488,7 @@
       "color": "#34A853",
       "intelligence": 14.6689500745828,
       "cost": 0,
-      "timeSeconds": 344.78501214521486,
+      "timeSeconds": 345.82550332637487,
       "openWeights": true,
       "estimated": false
     },
@@ -7462,7 +7501,7 @@
       "color": "#cc785c",
       "intelligence": 49.6258202733378,
       "cost": 8.745961651687406,
-      "timeSeconds": 645.4414804050997,
+      "timeSeconds": 608.9283043501208,
       "openWeights": false,
       "estimated": false
     },
@@ -7475,7 +7514,7 @@
       "color": "#1c7ff8",
       "intelligence": 44.777392385614,
       "cost": 2.0056375150449584,
-      "timeSeconds": 775.5893425535231,
+      "timeSeconds": 773.378862473054,
       "openWeights": true,
       "estimated": false
     },
@@ -7683,7 +7722,7 @@
       "color": "#1f1f1f",
       "intelligence": 28.5121413410513,
       "cost": 0.33365590023828273,
-      "timeSeconds": 57.28325611164112,
+      "timeSeconds": 52.27241599502371,
       "openWeights": false,
       "estimated": false
     },
@@ -7709,7 +7748,7 @@
       "color": "#2243e6",
       "intelligence": 20.3605101726847,
       "cost": 0.35547065335335964,
-      "timeSeconds": 320.9989334594239,
+      "timeSeconds": 370.29149007124767,
       "openWeights": true,
       "estimated": false
     },
@@ -7722,7 +7761,7 @@
       "color": "#1f1f1f",
       "intelligence": 20.7197352504557,
       "cost": 0.1830802502922872,
-      "timeSeconds": 398.10095426602487,
+      "timeSeconds": 407.1270887074276,
       "openWeights": false,
       "estimated": false
     },
@@ -7735,7 +7774,7 @@
       "color": "#0089f4",
       "intelligence": 45.0732966922226,
       "cost": 1.3677936514692752,
-      "timeSeconds": 229.26554809175767,
+      "timeSeconds": 185.61712371350396,
       "openWeights": false,
       "estimated": false
     },
@@ -7774,7 +7813,7 @@
       "color": "#0089f4",
       "intelligence": 33.7298425919846,
       "cost": 1.3802453886670354,
-      "timeSeconds": 399.7309208764521,
+      "timeSeconds": 286.2999505547161,
       "openWeights": false,
       "estimated": false
     },
@@ -7800,7 +7839,7 @@
       "color": "#736cd3",
       "intelligence": 44.199810436996,
       "cost": 1.7523145158282367,
-      "timeSeconds": 713.1204980765758,
+      "timeSeconds": 627.4381897180518,
       "openWeights": false,
       "estimated": false
     },
@@ -7826,7 +7865,7 @@
       "color": "#34A853",
       "intelligence": 8.90908441839731,
       "cost": 0.008163276245907385,
-      "timeSeconds": 187.25553810580183,
+      "timeSeconds": 189.9849299808226,
       "openWeights": true,
       "estimated": false
     },
@@ -7839,7 +7878,7 @@
       "color": "#2243e6",
       "intelligence": 24.1673138235549,
       "cost": 0.08953612525522162,
-      "timeSeconds": 1305.7688823161977,
+      "timeSeconds": 1024.4623273583832,
       "openWeights": true,
       "estimated": false
     },
@@ -7865,7 +7904,7 @@
       "color": "#1f1f1f",
       "intelligence": 46.9727068915036,
       "cost": 1.98845538085375,
-      "timeSeconds": 348.807517951186,
+      "timeSeconds": 324.13449265192514,
       "openWeights": false,
       "estimated": false
     },
@@ -7891,7 +7930,7 @@
       "color": "#1f1f1f",
       "intelligence": 44.008876369169,
       "cost": 1.1843629381907275,
-      "timeSeconds": 236.6336324379229,
+      "timeSeconds": 220.29513859108357,
       "openWeights": false,
       "estimated": false
     },
@@ -7904,7 +7943,7 @@
       "color": "#1f1f1f",
       "intelligence": 44.2448955516407,
       "cost": 0.5208098524368193,
-      "timeSeconds": 187.70542794365747,
+      "timeSeconds": 147.78782317749585,
       "openWeights": false,
       "estimated": false
     },
@@ -7969,7 +8008,7 @@
       "color": "#2243e6",
       "intelligence": 39.456167472527,
       "cost": 0.26522527009606844,
-      "timeSeconds": 350.09591350459635,
+      "timeSeconds": 361.81506607584737,
       "openWeights": true,
       "estimated": false
     },
@@ -7982,7 +8021,7 @@
       "color": "#1f1f1f",
       "intelligence": 15.5270002110259,
       "cost": 0.010091821810180262,
-      "timeSeconds": 18.055533286472617,
+      "timeSeconds": 16.18260557783557,
       "openWeights": false,
       "estimated": false
     },
@@ -7995,7 +8034,7 @@
       "color": "#f32e02",
       "intelligence": 14.1889227802691,
       "cost": 0.5020382394983653,
-      "timeSeconds": 161.998581977702,
+      "timeSeconds": 151.66922439157085,
       "openWeights": true,
       "estimated": false
     },
@@ -8099,7 +8138,7 @@
       "color": "#cc785c",
       "intelligence": 55.9873505840139,
       "cost": 3.459110175822289,
-      "timeSeconds": 519.7310553913577,
+      "timeSeconds": 499.983796255837,
       "openWeights": false,
       "estimated": false
     },
@@ -8112,7 +8151,7 @@
       "color": "#cc785c",
       "intelligence": 30.0575611117644,
       "cost": 2.4858655963942224,
-      "timeSeconds": 1247.9110390716698,
+      "timeSeconds": 983.8560134426613,
       "openWeights": false,
       "estimated": false
     },
@@ -8177,7 +8216,7 @@
       "color": "#1f1f1f",
       "intelligence": 50.9191471636152,
       "cost": 1.7252530861048456,
-      "timeSeconds": 278.70580611124734,
+      "timeSeconds": 221.33409222473142,
       "openWeights": false,
       "estimated": false
     },
@@ -8234,6 +8273,19 @@
       "estimated": true
     },
     {
+      "id": "e2c0623e-c855-4a61-bb66-be1f1ed43234",
+      "slug": "nemotron-3-5-super-vl",
+      "name": "Nemotron 3.5 Super VL",
+      "shortName": "Nemotron 3.5 Super VL",
+      "creator": "NVIDIA",
+      "color": "#76b900",
+      "intelligence": 26.4910658661689,
+      "cost": 0.18823665957318256,
+      "timeSeconds": 116.11116107285581,
+      "openWeights": true,
+      "estimated": false
+    },
+    {
       "id": "e2e9ddc3-8c2d-4bf5-a60a-83a1afe61034",
       "slug": "gpt-4o-realtime-dec-2024",
       "name": "GPT-4o Realtime (Dec '24)",
@@ -8268,7 +8320,7 @@
       "color": "#4fb5ff",
       "intelligence": 20.1332521865481,
       "cost": null,
-      "timeSeconds": 140.7799057682152,
+      "timeSeconds": 150.09381234780383,
       "openWeights": true,
       "estimated": false
     },
@@ -8346,7 +8398,7 @@
       "color": "#1f1f1f",
       "intelligence": 42.0835618555848,
       "cost": 0.13075190869859377,
-      "timeSeconds": 89.7069012491034,
+      "timeSeconds": 86.51107512380175,
       "openWeights": false,
       "estimated": false
     },
@@ -8398,7 +8450,7 @@
       "color": "#1f1f1f",
       "intelligence": 49.5704363034369,
       "cost": 1.5406493220021167,
-      "timeSeconds": 214.57458062805665,
+      "timeSeconds": 194.54949137020162,
       "openWeights": false,
       "estimated": false
     },
@@ -8463,7 +8515,7 @@
       "color": "#cc785c",
       "intelligence": 51.2434931792768,
       "cost": 1.3360093438976588,
-      "timeSeconds": 219.29384543912147,
+      "timeSeconds": 200.43705265561394,
       "openWeights": false,
       "estimated": false
     },
@@ -8502,7 +8554,7 @@
       "color": "#4fb5ff",
       "intelligence": 16.6172363768618,
       "cost": 0.2871573189066596,
-      "timeSeconds": 333.2237009415209,
+      "timeSeconds": 339.1661527930872,
       "openWeights": true,
       "estimated": false
     },
@@ -8606,7 +8658,7 @@
       "color": "#cc785c",
       "intelligence": 28.0531468379456,
       "cost": 0.9991061406688175,
-      "timeSeconds": 279.18161707001343,
+      "timeSeconds": 234.29218259253778,
       "openWeights": false,
       "estimated": false
     },
@@ -8618,8 +8670,8 @@
       "creator": "OpenAI",
       "color": "#1f1f1f",
       "intelligence": 11.6028431512592,
-      "cost": 0.10728975304606923,
-      "timeSeconds": 115.51770608056928,
+      "cost": 0.0921933712679154,
+      "timeSeconds": 113.14937866670445,
       "openWeights": true,
       "estimated": false
     },
@@ -8684,7 +8736,7 @@
       "color": "#cc785c",
       "intelligence": 53.5831959822067,
       "cost": 1.822504718771704,
-      "timeSeconds": 292.8022007646619,
+      "timeSeconds": 273.2389446767389,
       "openWeights": false,
       "estimated": false
     },
@@ -8775,7 +8827,7 @@
       "color": "#ff7018",
       "intelligence": 12.7108511527974,
       "cost": null,
-      "timeSeconds": 265.2164025277985,
+      "timeSeconds": 313.8474718549141,
       "openWeights": true,
       "estimated": false
     },
@@ -8840,7 +8892,7 @@
       "color": "#1c7ff8",
       "intelligence": 33.7054572377545,
       "cost": 1.4726179494034382,
-      "timeSeconds": 769.6267409230866,
+      "timeSeconds": 667.9832848110104,
       "openWeights": true,
       "estimated": false
     },
@@ -8853,7 +8905,7 @@
       "color": "#047AFE",
       "intelligence": 43.5938229518782,
       "cost": 2.0001323004425493,
-      "timeSeconds": 979.7062388053846,
+      "timeSeconds": 1071.0076114904193,
       "openWeights": true,
       "estimated": false
     },
@@ -8892,7 +8944,7 @@
       "color": "#f11338",
       "intelligence": 26.7372536607816,
       "cost": 2.024611832657714,
-      "timeSeconds": 494.07626993193736,
+      "timeSeconds": 373.31895076377987,
       "openWeights": false,
       "estimated": false
     },
@@ -8969,8 +9021,8 @@
       "creator": "Alibaba",
       "color": "#ff7018",
       "intelligence": 9.23682203219174,
-      "cost": 0.7805028420975578,
-      "timeSeconds": 218.94842274832175,
+      "cost": 0.46969565354948617,
+      "timeSeconds": 213.91260100776483,
       "openWeights": true,
       "estimated": false
     },
@@ -9035,7 +9087,7 @@
       "color": "#2243e6",
       "intelligence": 34.3305129347816,
       "cost": 0.21964484501171036,
-      "timeSeconds": 262.6552124998229,
+      "timeSeconds": 242.2136904855224,
       "openWeights": true,
       "estimated": false
     },
@@ -9061,7 +9113,7 @@
       "color": "#0089f4",
       "intelligence": 52.393894697293,
       "cost": 4.515677444063016,
-      "timeSeconds": 409.50587617386634,
+      "timeSeconds": 290.06967230590294,
       "openWeights": false,
       "estimated": false
     },
@@ -9074,7 +9126,7 @@
       "color": "#cc785c",
       "intelligence": 44.8253265420613,
       "cost": 2.1894793086538695,
-      "timeSeconds": 355.59974478150883,
+      "timeSeconds": 327.9468530460787,
       "openWeights": false,
       "estimated": false
     },
