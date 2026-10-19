@@ -18,7 +18,9 @@ Axes use muted blue (intelligence), green (cost), and purple (time). Bounds star
 
 ## Data
 
-The language button switches chart labels, menus, search UI, and hints between Chinese and English. The preference survives reloads and changing language preserves the current selection and manual viewport. This branch adds language only; model filtering, themes, periodic data checks, and 3D reset/fitting are separate changes.
+The language button switches chart labels, menus, search UI, and hints between Chinese and English. The preference survives reloads and changing language preserves the current selection and manual viewport.
+
+The theme button switches light/dark palettes for the panel, chart background, axes, hover labels, and search UI. Theme preference also survives reloads and preserves selection and viewport. Model filtering, periodic data checks, and 3D reset/fitting remain separate changes.
 
 Source: [Artificial Analysis](https://artificialanalysis.ai/models/). The checked-in snapshot contains 704 models and reasoning variants, of which 187 have all three required metrics. Missing values are never replaced with zero. Snapshot timestamps and original precision are retained in `src/data.json`; the live snapshot can differ after scheduled updates.
 

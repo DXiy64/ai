@@ -220,6 +220,18 @@ nav button span {
   --atlas-accent: #2462a8;
   --atlas-input: #fafbfd;
 }
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --atlas-bg: #101722;
+  --atlas-panel: #182333;
+  --atlas-text: #dbe5f2;
+  --atlas-muted: #a2b1c6;
+  --atlas-border: #34455c;
+  --atlas-hover: #213248;
+  --atlas-selected: #294361;
+  --atlas-accent: #aed4ff;
+  --atlas-input: #121e2e;
+}
 html,
 body {
   background: var(--atlas-bg);
