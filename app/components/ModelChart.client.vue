@@ -1,5 +1,5 @@
 <script setup>
-import Plotly from 'plotly.js-gl3d-dist-min';
+import Plotly from 'plotly.js-dist-min';
 import fallbackData from '../../src/data.json';
 let data = fallbackData;
 import { onMounted, onBeforeUnmount, nextTick, ref, computed, watch } from 'vue';
@@ -122,9 +122,9 @@ async function locateModel(model) {
 const initialCamera = () => ({ eye: { x: 1.65, y: 1.65, z: 1.1 }, up: { x: 0, y: 0, z: 1 }, projection: { type: 'perspective' } });
 const currentView = ref('4');
 const planeViews = {
-  '1': { eye: { x: 0, y: 2.5, z: 0 }, up: { x: 0, y: 0, z: -1 }, hidden: 'yaxis' },
-  '2': { eye: { x: 2.5, y: 0, z: 0 }, up: { x: 0, y: 0, z: -1 }, hidden: 'xaxis' },
-  '3': { eye: { x: 0, y: 0, z: 2.5 }, up: { x: 0, y: -1, z: 0 }, hidden: 'zaxis' }
+  '1': { eye: { x: 0, y: 1.3, z: 0 }, up: { x: 0, y: 0, z: -1 }, hidden: 'yaxis' },
+  '2': { eye: { x: 1.3, y: 0, z: 0 }, up: { x: 0, y: 0, z: -1 }, hidden: 'xaxis' },
+  '3': { eye: { x: 0, y: 0, z: 1.3 }, up: { x: 0, y: -1, z: 0 }, hidden: 'zaxis' }
 };
 const viewCamera = () => currentView.value === '4' ? initialCamera() : {
   eye: { ...planeViews[currentView.value].eye }, up: { ...planeViews[currentView.value].up }, center: { x: 0, y: 0, z: 0 }, projection: { type: 'orthographic' }
@@ -160,7 +160,7 @@ const colors = {
 const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 
 function modelRange(key, scale = 1) {
-  const maximum = Math.max(0, ...models.map(model => model[key] / scale));
+  const maximum = Math.max(0, ...models.filter(model => !hiddenIds.value.has(model.id)).map(model => model[key] / scale));
   if (!maximum) return [0, 1];
   const roughStep = maximum / 8;
   const magnitude = 10 ** Math.floor(Math.log10(roughStep));
@@ -174,7 +174,7 @@ const axis = (title, range, color, hideZero = false, prefix = '') => {
   const step = [1, 2, 5, 10].find(value => value * magnitude >= rough) * magnitude;
   const ticks = Array.from({ length: Math.round(range[1] / step) + 1 }, (_, index) => index * step);
   return ({
-  title: { text: title, font: { size: 13, color } },
+  title: { text: currentView.value === '4' ? title : '', font: { size: 13, color } },
   gridcolor: '#e0e6ee',
   zeroline: false,
   linecolor: '#d5dce5',
@@ -216,18 +216,59 @@ function createTraces() {
         escape(provider) +
         '</extra>'
     };
+  }).map(trace => {
+    if (currentView.value === '4') return trace;
+    const original = { x: trace.x, y: trace.y, z: trace.z };
+    return {
+      ...trace, type: 'scatter',
+      x: currentView.value === '2' ? original.y : original.x,
+      y: currentView.value === '3' ? original.y : original.z,
+      z: undefined,
+      marker: { ...trace.marker, size: 9 },
+      hovertext: trace.customdata.map(id => {
+        const model = models.find(model => model.id === id);
+        return `<b>${escape(model.name)}</b><br>Intelligence Index: ${model.intelligence.toFixed(2)}<br>Cost per Task: $${model.cost.toFixed(4)}<br>Time per Task: ${(model.timeSeconds / 60).toFixed(2)} min`;
+      }),
+      hovertemplate: '%{hovertext}<extra>' + escape(trace.name) + '</extra>'
+    };
   });
 }
 
 const config = { responsive: true, displayModeBar: false, scrollZoom: true, doubleClick: false };
 
-const getLayout = (resetCamera = false) => ({
+function getPlaneLayout(reset) {
+  const horizontal = currentView.value === '2' ? 'cost' : 'intelligence';
+  const vertical = currentView.value === '3' ? 'cost' : 'timeSeconds';
+  const titles = { intelligence: 'Intelligence Index', cost: 'Cost per Task (USD)', timeSeconds: 'Time per Task (min)' };
+  const colors = { intelligence: '#7b9bc9', cost: '#7ba58b', timeSeconds: '#a18bc5' };
+  const planeAxis = key => ({
+    title: { text: titles[key], standoff: 16, font: { size: 13, color: colors[key] } },
+    range: key === 'intelligence' ? modelRange(key) : modelRange(key, key === 'timeSeconds' ? 60 : 1).reverse(),
+    autorange: false, automargin: true, gridcolor: '#e0e6ee', zeroline: false,
+    tickfont: { size: 11, color: colors[key] }, tickprefix: key === 'cost' ? '$' : '',
+    linecolor: '#d5dce5', fixedrange: false
+  });
+  return {
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+    font: { family: 'Segoe UI, Microsoft YaHei, sans-serif', color: '#465366' },
+    margin: { l: 75, r: 30, t: 30, b: 90 }, showlegend: false, dragmode: 'pan',
+    uirevision: reset ? Date.now() : (chart.value?.layout?.uirevision ?? 'plane'),
+    xaxis: planeAxis(horizontal), yaxis: planeAxis(vertical),
+    hoverlabel: { bgcolor: '#ffffff', bordercolor: '#cbd5e1', font: { color: '#26354a', size: 12 } }
+  };
+}
+
+const getLayout = (resetCamera = false) => currentView.value !== '4' ? getPlaneLayout(resetCamera) : ({
   paper_bgcolor: '#ffffff',
   plot_bgcolor: '#ffffff',
   font: { family: 'Segoe UI, Microsoft YaHei, sans-serif', color: '#465366' },
-  margin: { l: 20, r: 20, t: 20, b: 20 },
+  margin: currentView.value === '4' ? { l: 20, r: 20, t: 20, b: 20 } : { l: 65, r: 30, t: 25, b: 75 },
+  annotations: currentView.value === '4' ? [] : [
+    { x: 0.5, y: 0, xref: 'paper', yref: 'paper', yshift: -18, text: currentView.value === '2' ? 'Cost per Task (USD)' : 'Intelligence Index', showarrow: false, font: { size: 13, color: currentView.value === '2' ? '#7ba58b' : '#7b9bc9' } },
+    { x: 0, y: 0.5, xref: 'paper', yref: 'paper', xshift: -40, text: currentView.value === '3' ? 'Cost per Task (USD)' : 'Time per Task (min)', textangle: -90, showarrow: false, font: { size: 13, color: currentView.value === '3' ? '#7ba58b' : '#a18bc5' } }
+  ],
   showlegend: false,
-  uirevision: resetCamera ? Date.now() : 'model-chart-camera',
+  uirevision: resetCamera ? Date.now() : (chart.value?.layout?.uirevision ?? 'model-chart-camera'),
   scene: {
     xaxis: { ...axis('X · Intelligence Index', modelRange('intelligence'), '#7b9bc9'), visible: planeViews[currentView.value]?.hidden !== 'xaxis' },
     yaxis: { ...axis('Y · Cost per Task (USD)', modelRange('cost'), '#7ba58b', true, '$'), visible: planeViews[currentView.value]?.hidden !== 'yaxis' },
@@ -248,8 +289,9 @@ const getLayout = (resetCamera = false) => ({
       bgcolor: 'rgba(255,255,255,0.85)',
       borderpad: 4
     }],
-    aspectmode: 'cube',
-    ...(resetCamera ? { camera: viewCamera() } : {}),
+    aspectmode: currentView.value === '4' ? 'cube' : 'manual',
+
+    camera: resetCamera ? viewCamera() : structuredClone(chart.value?._fullLayout?.scene?.camera ?? viewCamera()),
     dragmode: currentView.value === '4' ? 'orbit' : 'pan'
   },
   hoverlabel: { bgcolor: '#ffffff', bordercolor: '#cbd5e1', font: { color: '#26354a', size: 12 } }
@@ -266,6 +308,14 @@ async function hideModel(id) {
 
 function centerOnPoint(pt) {
   if (!pt || !ready || !chart.value) return;
+  if (currentView.value !== '4') {
+    const layout = chart.value._fullLayout;
+    const x = currentView.value === '2' ? pt.y : pt.x;
+    const y = currentView.value === '3' ? pt.y : pt.z;
+    const centered = (range, value) => [value - (range[1] - range[0]) / 2, value + (range[1] - range[0]) / 2];
+    Plotly.relayout(chart.value, { 'xaxis.range': centered(layout.xaxis.range, x), 'yaxis.range': centered(layout.yaxis.range, y) }).catch(console.error);
+    return;
+  }
   const scene = chart.value._fullLayout?.scene;
   const xr = modelRange('intelligence');
   const yr = modelRange('cost');
@@ -312,7 +362,7 @@ async function resetAll(event) {
   hoveredPoint = null;
 
   await Plotly.react(chart.value, createTraces(), getLayout(true), config).catch(console.error);
-  Plotly.relayout(chart.value, { 'scene.camera': viewCamera() }).catch(console.error);
+  if (currentView.value === '4') Plotly.relayout(chart.value, { 'scene.camera': initialCamera() }).catch(console.error);
 }
 
 function handleContextMenu(event) {
@@ -351,7 +401,8 @@ onMounted(async () => {
       if (eventData?.points?.length) {
         const p = eventData.points[0];
         hoveredModelId = p.customdata;
-        hoveredPoint = { x: p.x, y: p.y, z: p.z };
+        const model = models.find(model => model.id === p.customdata);
+        hoveredPoint = model ? { x: model.intelligence, y: model.cost, z: model.timeSeconds / 60 } : null;
       }
     });
 
@@ -364,7 +415,8 @@ onMounted(async () => {
       if (eventData?.points?.length) {
         const p = eventData.points[0];
         hoveredModelId = p.customdata;
-        hoveredPoint = { x: p.x, y: p.y, z: p.z };
+        const model = models.find(model => model.id === p.customdata);
+        hoveredPoint = model ? { x: model.intelligence, y: model.cost, z: model.timeSeconds / 60 } : null;
       }
     });
 
@@ -418,7 +470,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
     </div>
-    <p class="usage-help"><span>/ Search · Double-click Center · Right-click Hide · R Reset</span><span>1 Intelligence/Time · 2 Cost/Time · 3 Intelligence/Cost · 4 3D</span></p>
+    <p class="usage-help"><span>/ Search · Double-click Center · Right-click Hide · R Reset</span><span>1, 2, 3, 4 Switch views</span></p>
     <div id="chart" :ref="el => chart = el" aria-label="X: Intelligence Index; Y: Cost per Task (USD); Z: Time per Task (min)" />
     <div v-if="hiddenCount > 0" id="reset-tip" @click="resetAll">
       {{ hiddenCount }} models hidden · <span class="action">Press R or click to reset</span>
