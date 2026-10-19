@@ -159,7 +159,7 @@ const dictionary = {
   },
 };
 let lang = saved("model-atlas-language", "zh"),
-  theme = "light";
+  theme = saved("model-atlas-theme", "light");
 function saved(key, fallback) {
   try {
     return localStorage.getItem(key) || fallback;
@@ -179,6 +179,16 @@ const palettes = {
     border: "#d7e0eb",
     plane: "#fbfcfe",
     better: "#4e8274",
+  },
+  dark: {
+    bg: "#101722",
+    panel: "#182333",
+    text: "#dbe5f2",
+    muted: "#a2b1c6",
+    grid: "#29394e",
+    border: "#40516a",
+    plane: "#152030",
+    better: "#9bd3bc",
   },
 };
 function apply() {
@@ -204,6 +214,13 @@ const UI = {
     lang = value === "en" ? "en" : "zh";
     try {
       localStorage.setItem("model-atlas-language", lang);
+    } catch {}
+    apply();
+  },
+  setTheme(value) {
+    theme = value === "dark" ? "dark" : "light";
+    try {
+      localStorage.setItem("model-atlas-theme", theme);
     } catch {}
     apply();
   },

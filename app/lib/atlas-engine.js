@@ -882,7 +882,7 @@ export function mountAtlas(root, options = {}) {
   const preferences = document.createElement("div");
   preferences.className = "preferences";
   preferences.innerHTML =
-    '<button type="button" id="language-switch"></button>';
+    '<button type="button" id="language-switch"></button><button type="button" id="theme-switch"></button>';
   panelHead.append(preferences);
   function applyPresentation() {
     options.onPresentation?.(UI);
@@ -927,6 +927,13 @@ export function mountAtlas(root, options = {}) {
     language.textContent = UI.lang === "zh" ? "EN" : "中文";
     language.title = t(UI.lang === "zh" ? "toEnglish" : "toChinese");
     language.setAttribute("aria-label", language.title);
+    const theme = root.querySelector("#theme-switch");
+    theme.title = t(UI.theme === "light" ? "toDark" : "toLight");
+    theme.setAttribute("aria-label", theme.title);
+    theme.innerHTML =
+      UI.theme === "light"
+        ? '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.4 9.1A5.4 5.4 0 0 1 6.9 2.6a5.5 5.5 0 1 0 6.5 6.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
+        : '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 1v1m0 12v1M1 8h1m12 0h1M3 3l.8.8m8.4 8.4.8.8M3 13l.8-.8m8.4-8.4.8-.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
     showDataStatus(lastDataMeta);
     updateOverlay();
   }
@@ -938,6 +945,14 @@ export function mountAtlas(root, options = {}) {
   }
   root.querySelector("#language-switch").onclick = () =>
     switchLanguage().catch(console.error);
+  async function switchTheme() {
+    UI.setTheme(UI.theme === "light" ? "dark" : "light");
+    applyPresentation();
+    drawPicker();
+    await render();
+  }
+  root.querySelector("#theme-switch").onclick = () =>
+    switchTheme().catch(console.error);
   function showDataStatus(meta = {}) {
     lastDataMeta = meta;
     const date = new Intl.DateTimeFormat(UI.lang === "zh" ? "zh-CN" : "en-GB", {
