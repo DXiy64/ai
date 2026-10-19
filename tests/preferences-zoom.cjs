@@ -224,6 +224,12 @@ const { chromium } = require("playwright");
     await p.screenshot({ path: "test-results/preview-zh-light.png" });
     await p.locator("[data-view=free]").click();
     await settle();
+    await p.evaluate(() => compareLab.hideModel(compareLab.selected[0]));
+    await settle();
+    const resetCamera = await p.evaluate(() =>
+      document.querySelector("#chart3d")._fullLayout.scene._scene.getCamera(),
+    );
+    assert.equal(await p.locator("#fit-selected").isVisible(), true);
     const before3d = await p.evaluate(
       () => document.querySelector("#chart3d").data[0].marker.size,
     );
@@ -275,6 +281,28 @@ const { chromium } = require("playwright");
       );
     assert.deepEqual(afterPoints.points, beforePoints);
     assert.ok(new Set(beforePoints.map((d) => d[1])).size > 1);
+    await p.locator("#fit-selected").click();
+    await settle();
+    const resetState = await p.evaluate(() => {
+      const c = document.querySelector("#chart3d");
+      return {
+        camera: c._fullLayout.scene._scene.getCamera(),
+        points: c.data.flatMap((trace) =>
+          trace.customdata.map((d, i) => [d[4], trace.marker.color[i]]),
+        ),
+      };
+    });
+    assert.deepEqual(
+      resetState.points,
+      beforePoints,
+      "reset keeps current selection and hidden models",
+    );
+    for (const part of ["eye", "center", "up"])
+      for (const axis of ["x", "y", "z"])
+        assert.ok(
+          Math.abs(resetState.camera[part][axis] - resetCamera[part][axis]) <
+            1e-6,
+        );
     await p.locator("#theme-switch").click();
     await settle();
     await p.screenshot({ path: "test-results/preview-3d-dark.png" });

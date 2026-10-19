@@ -298,7 +298,7 @@ export function mountAtlas(root, options = {}) {
   }
   const planeBounds = (key) => planeFrame?.ranges[key] || metrics[key].range;
   async function fitSelected() {
-    if (active === "free") return;
+    if (active === "free") return setView("free");
     resetPlaneFit();
     await render();
   }
@@ -821,7 +821,6 @@ export function mountAtlas(root, options = {}) {
     options.onView?.(key);
     active = key;
     resetPlaneFit();
-    root.querySelector("#fit-selected").hidden = key === "free";
     resetVersion++;
     wheelRanges = null;
     wheelTargets = null;
