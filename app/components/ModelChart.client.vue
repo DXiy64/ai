@@ -1,5 +1,6 @@
 <script setup>
 import Plotly from 'plotly.js-dist-min';
+import { fitCamera, fitAxis, metricTicks } from '../lib/space-fit.js';
 import fallbackData from '../../src/data.json';
 let data = fallbackData;
 import { onMounted, onBeforeUnmount, nextTick, ref, computed, watch } from 'vue';
@@ -154,7 +155,7 @@ async function locateModel(model) {
   centerOnPoint({ x: model.intelligence, y: model.cost, z: model.timeSeconds / 60 });
   closeSearch();
 }
-const initialCamera = () => ({ eye: { x: 1.65, y: 1.65, z: 1.1 }, up: { x: 0, y: 0, z: 1 }, projection: { type: 'perspective' } });
+const initialCamera = () => ({ center: { x: 0, y: 0, z: 0 }, eye: { x: 1.65, y: 1.65, z: 1.1 }, up: { x: 0, y: 0, z: 1 }, projection: { type: 'perspective' } });
 const currentView = ref('4');
 const planeViews = {
   '1': { eye: { x: 0, y: 1.3, z: 0 }, up: { x: 0, y: 0, z: -1 }, hidden: 'yaxis' },
@@ -170,10 +171,13 @@ async function handleViewKey(event) {
   if (!ready || !chart.value) return;
   event.preventDefault();
   currentView.value = event.key;
+  if (event.key === '4') autoFit3d = true;
   hoveredModelId = null;
   hoveredPoint = null;
   await Plotly.react(chart.value, createTraces(), getLayout(true), config).catch(console.error);
 }
+let autoFit3d = true;
+let resizeFrame = 0;
 let ready = false;
 let hoveredModelId = null;
 let hoveredPoint = null;
@@ -203,11 +207,28 @@ function modelRange(key, scale = 1) {
   return [0, Math.ceil(maximum / step) * step];
 }
 
+function spaceRange(key, scale = 1) {
+  const visible = models.filter(model => !hiddenIds.value.has(model.id));
+  const maximum = Math.max(1, ...models.map(model => model[key] / scale));
+  return fitAxis(visible.map(model => model[key] / scale), [0, maximum], 600, { size: 5, width: 0.6 });
+}
+function fittedCamera() {
+  const corners = [-0.5, 0.5].flatMap(x => [-0.5, 0.5].flatMap(y => [-0.5, 0.5].map(z => [x, y, z])));
+  return fitCamera(corners, initialCamera(), Math.max(40, chart.value.clientWidth - 40), Math.max(40, chart.value.clientHeight - 40));
+}
+function stopAutoFit() {
+  if (currentView.value === '4') autoFit3d = false;
+}
+function resizeSpace() {
+  cancelAnimationFrame(resizeFrame);
+  resizeFrame = requestAnimationFrame(() => {
+    if (!ready || currentView.value !== '4') return;
+    const camera = autoFit3d ? fittedCamera() : chart.value._fullLayout.scene._scene.getCamera();
+    Plotly.relayout(chart.value, { 'scene.camera': camera }).catch(console.error);
+  });
+}
 const axis = (title, range, color, hideZero = false, prefix = '') => {
-  const rough = range[1] / 8;
-  const magnitude = 10 ** Math.floor(Math.log10(rough));
-  const step = [1, 2, 5, 10].find(value => value * magnitude >= rough) * magnitude;
-  const ticks = Array.from({ length: Math.round(range[1] / step) + 1 }, (_, index) => index * step);
+  const ticks = metricTicks(range);
   return ({
   title: { text: currentView.value === '4' ? title : '', font: { size: 13, color } },
   gridcolor: palette().grid,
@@ -220,8 +241,9 @@ const axis = (title, range, color, hideZero = false, prefix = '') => {
   linewidth: 1,
   showspikes: false,
   tickmode: 'array',
-  tickvals: ticks,
-  ticktext: ticks.map(value => hideZero && value === 0 ? '' : `${prefix}${value}`),
+  tickvals: ticks.values.filter(value => !hideZero || value !== 0),
+  tickformat: ticks.format,
+  tickprefix: prefix,
   autorange: false,
   range
   });
@@ -306,13 +328,13 @@ const getLayout = (resetCamera = false) => currentView.value !== '4' ? getPlaneL
   showlegend: false,
   uirevision: resetCamera ? Date.now() : (chart.value?.layout?.uirevision ?? 'model-chart-camera'),
   scene: {
-    xaxis: { ...axis('X · Intelligence Index', modelRange('intelligence'), palette().ability), visible: planeViews[currentView.value]?.hidden !== 'xaxis' },
-    yaxis: { ...axis('Y · Cost per Task (USD)', modelRange('cost'), palette().cost, true, '$'), visible: planeViews[currentView.value]?.hidden !== 'yaxis' },
-    zaxis: { ...axis('Z · Time per Task (min)', modelRange('timeSeconds', 60), palette().time, true), visible: planeViews[currentView.value]?.hidden !== 'zaxis' },
+    xaxis: { ...axis('X · Intelligence Index', spaceRange('intelligence'), palette().ability), visible: planeViews[currentView.value]?.hidden !== 'xaxis' },
+    yaxis: { ...axis('Y · Cost per Task (USD)', spaceRange('cost'), palette().cost, true, '$'), visible: planeViews[currentView.value]?.hidden !== 'yaxis' },
+    zaxis: { ...axis('Z · Time per Task (min)', spaceRange('timeSeconds', 60), palette().time, true), visible: planeViews[currentView.value]?.hidden !== 'zaxis' },
     annotations: [{
-      x: modelRange('intelligence')[1] - 0.001,
-      y: modelRange('cost')[0] + 0.001,
-      z: modelRange('timeSeconds', 60)[0] + 0.001,
+      x: spaceRange('intelligence')[1],
+      y: spaceRange('cost')[0],
+      z: spaceRange('timeSeconds', 60)[0],
       text: '◇ Ideal corner',
       hovertext: 'Higher intelligence · Lower cost · Less time',
       showarrow: true,
@@ -327,7 +349,7 @@ const getLayout = (resetCamera = false) => currentView.value !== '4' ? getPlaneL
     }],
     aspectmode: currentView.value === '4' ? 'cube' : 'manual',
 
-    camera: resetCamera ? viewCamera() : structuredClone(chart.value?._fullLayout?.scene?.camera ?? viewCamera()),
+    camera: autoFit3d ? fittedCamera() : structuredClone(chart.value?._fullLayout?.scene?._scene?.getCamera() ?? viewCamera()),
     dragmode: currentView.value === '4' ? 'orbit' : 'pan'
   },
   hoverlabel: { bgcolor: palette().panel, bordercolor: palette().border, font: { color: palette().text, size: 12 } }
@@ -337,6 +359,7 @@ async function hideModel(id) {
   if (!id || !ready || !chart.value) return;
   hiddenIds.value = new Set([...hiddenIds.value, id]);
   saveStoredHiddenIds(hiddenIds.value);
+  autoFit3d = true;
   hoveredModelId = null;
   hoveredPoint = null;
   await Plotly.react(chart.value, createTraces(), getLayout(false), config).catch(console.error);
@@ -353,9 +376,10 @@ function centerOnPoint(pt) {
     return;
   }
   const scene = chart.value._fullLayout?.scene;
-  const xr = modelRange('intelligence');
-  const yr = modelRange('cost');
-  const zr = modelRange('timeSeconds', 60);
+  autoFit3d = false;
+  const xr = spaceRange('intelligence');
+  const yr = spaceRange('cost');
+  const zr = spaceRange('timeSeconds', 60);
   // Plotly maps each axis into a centered scene cube before applying the camera.
   const toScene = (range, value, aspect = 1) =>
     ((value - range[0]) / (range[1] - range[0]) - 0.5) * aspect;
@@ -395,8 +419,8 @@ async function resetView(event) {
   hoveredModelId = null;
   hoveredPoint = null;
 
+  autoFit3d = true;
   await Plotly.react(chart.value, createTraces(), getLayout(true), config).catch(console.error);
-  if (currentView.value === '4') Plotly.relayout(chart.value, { 'scene.camera': initialCamera() }).catch(console.error);
 }
 
 async function resetAll() {
@@ -469,6 +493,9 @@ onMounted(async () => {
     chart.value.addEventListener('dblclick', handleDblClick);
     chart.value.addEventListener('contextmenu', handleContextMenu);
     window.addEventListener('keydown', resetView);
+    chart.value.addEventListener('pointerdown', stopAutoFit, true);
+    chart.value.addEventListener('wheel', stopAutoFit, { capture: true, passive: true });
+    window.addEventListener('resize', resizeSpace);
     window.addEventListener('keydown', handleSearchKey);
     window.addEventListener('keydown', handleViewKey);
   } catch (error) {
@@ -482,12 +509,16 @@ function handleThemeChange() {
 }
 
 onBeforeUnmount(() => {
+  cancelAnimationFrame(resizeFrame);
+  window.removeEventListener('resize', resizeSpace);
   themeMedia?.removeEventListener('change', handleThemeChange);
   ready = false;
   window.removeEventListener('keydown', resetView);
   window.removeEventListener('keydown', handleSearchKey);
   window.removeEventListener('keydown', handleViewKey);
   if (chart.value) {
+    chart.value.removeEventListener('pointerdown', stopAutoFit, true);
+    chart.value.removeEventListener('wheel', stopAutoFit, true);
     chart.value.removeEventListener('dblclick', handleDblClick);
     chart.value.removeEventListener('contextmenu', handleContextMenu);
     Plotly.purge(chart.value);
