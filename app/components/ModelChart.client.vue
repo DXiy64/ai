@@ -353,20 +353,25 @@ function centerOnPoint(pt) {
   }).catch(console.error);
 }
 
-async function resetAll(event) {
+async function resetView(event) {
   if (event) {
     if (event.key.toLowerCase() !== 'r' || event.ctrlKey || event.metaKey || event.altKey || event.repeat || event.isComposing) return;
     if (event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
   }
   if (!ready || !chart.value) return;
 
-  hiddenIds.value = new Set();
-  clearStoredHiddenIds();
   hoveredModelId = null;
   hoveredPoint = null;
 
   await Plotly.react(chart.value, createTraces(), getLayout(true), config).catch(console.error);
   if (currentView.value === '4') Plotly.relayout(chart.value, { 'scene.camera': initialCamera() }).catch(console.error);
+}
+
+async function resetAll() {
+  if (!ready || !chart.value) return;
+  hiddenIds.value = new Set();
+  clearStoredHiddenIds();
+  await resetView();
 }
 
 function handleContextMenu(event) {
@@ -429,7 +434,7 @@ onMounted(async () => {
 
     chart.value.addEventListener('dblclick', handleDblClick);
     chart.value.addEventListener('contextmenu', handleContextMenu);
-    window.addEventListener('keydown', resetAll);
+    window.addEventListener('keydown', resetView);
     window.addEventListener('keydown', handleSearchKey);
     window.addEventListener('keydown', handleViewKey);
   } catch (error) {
@@ -440,7 +445,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   ready = false;
-  window.removeEventListener('keydown', resetAll);
+  window.removeEventListener('keydown', resetView);
   window.removeEventListener('keydown', handleSearchKey);
   window.removeEventListener('keydown', handleViewKey);
   if (chart.value) {
@@ -476,10 +481,10 @@ onBeforeUnmount(() => {
       </div>
     </section>
     </div>
-    <p class="usage-help"><span>/ Search · Double-click Center · Right-click Hide · R Reset</span><span>1, 2, 3, 4 Switch views</span></p>
+    <p class="usage-help"><span>/ Search · Double-click Center · Right-click Hide · R Reset view</span><span>1, 2, 3, 4 Switch views</span></p>
     <div id="chart" :ref="el => chart = el" aria-label="X: Intelligence Index; Y: Cost per Task (USD); Z: Time per Task (min)" />
-    <div v-if="hiddenCount > 0" id="reset-tip" @click="resetAll">
-      {{ hiddenCount }} models hidden · <span class="action">Press R or click to reset</span>
+    <div v-if="hiddenCount > 0" id="reset-tip" @click="resetAll()">
+      {{ hiddenCount }} models hidden · <span class="action">Click to show all and reset view</span>
     </div>
     <p v-if="failed" id="error" role="alert">Chart failed to load. Check that WebGL is enabled and refresh.</p>
   </main>

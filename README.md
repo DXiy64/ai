@@ -12,7 +12,7 @@ Live site: [ai.mou7s.com](https://ai.mou7s.com)
 - Use ↑ / ↓ to select a search result, Enter to locate it, and Esc to close search. Results show intelligence, cost, and time; unavailable metrics appear as `—` and cannot be located.
 - Double-click a point to center the camera without changing axis bounds or marker sizes.
 - Right-click a point to hide it for the current browser session. Searching for a hidden model and selecting it restores it.
-- Press R to show all models and reset the current view. Shortcuts do not interrupt typing in the search field.
+- Press R to reset the current view while keeping hidden models hidden. Click the hidden-model notice to show all models and reset the view. Shortcuts do not interrupt typing in the search field.
 
 Axes use muted blue (intelligence), green (cost), and purple (time). Bounds start at zero and end on regular ticks. The **Ideal corner** marks the direction of higher intelligence, lower cost, and less time; it is not a combined model ranking.
 
