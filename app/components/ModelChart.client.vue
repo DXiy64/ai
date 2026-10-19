@@ -104,6 +104,9 @@ const canPlot = model => [model.intelligence, model.cost, model.timeSeconds]
 const formatMetric = (value, digits = 2, prefix = '', suffix = '') =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0
     ? `${prefix}${value.toFixed(digits)}${suffix}` : '—';
+const formatReleaseDate = value =>
+  typeof value === 'string' && /^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(value) && Number.isFinite(Date.parse(value))
+    ? value.slice(0, 10) : '—';
 const missingMetrics = model => [
   ['intelligence', 'intelligence'], ['cost', 'cost'], ['timeSeconds', 'time']
 ].filter(([key]) => !(typeof model[key] === 'number' && Number.isFinite(model[key]) && model[key] >= 0))
@@ -204,6 +207,7 @@ function createTraces() {
       y: group.map(m => m.cost),
       z: group.map(m => m.timeSeconds / 60),
       text: group.map(m => escape(m.name)),
+      hovertext: group.map(m => formatReleaseDate(m.releaseDate)),
       customdata: group.map(m => m.id),
       marker: {
         size: group.map(() => 5),
@@ -212,7 +216,7 @@ function createTraces() {
         line: { color: '#ffffff', width: 0.6 }
       },
       hovertemplate:
-        '<b>%{text}</b><br>Intelligence Index: %{x:.2f}<br>Cost per Task: $%{y:.4f}<br>Time per Task: %{z:.2f} min<br><span style="color:#94a3b8;font-size:11px;">Double-click to center · Right-click to hide</span><extra>' +
+        '<b>%{text}</b><br>Release date: %{hovertext}<br>Intelligence Index: %{x:.2f}<br>Cost per Task: $%{y:.4f}<br>Time per Task: %{z:.2f} min<br><span style="color:#94a3b8;font-size:11px;">Double-click to center · Right-click to hide</span><extra>' +
         escape(provider) +
         '</extra>'
     };
@@ -227,7 +231,7 @@ function createTraces() {
       marker: { ...trace.marker, size: 9 },
       hovertext: trace.customdata.map(id => {
         const model = models.find(model => model.id === id);
-        return `<b>${escape(model.name)}</b><br>Intelligence Index: ${model.intelligence.toFixed(2)}<br>Cost per Task: $${model.cost.toFixed(4)}<br>Time per Task: ${(model.timeSeconds / 60).toFixed(2)} min`;
+        return `<b>${escape(model.name)}</b><br>Release date: ${formatReleaseDate(model.releaseDate)}<br>Intelligence Index: ${model.intelligence.toFixed(2)}<br>Cost per Task: $${model.cost.toFixed(4)}<br>Time per Task: ${(model.timeSeconds / 60).toFixed(2)} min`;
       }),
       hovertemplate: '%{hovertext}<extra>' + escape(trace.name) + '</extra>'
     };
@@ -387,8 +391,9 @@ onMounted(async () => {
       if (!response.ok) throw new Error(`Data HTTP ${response.status}`);
       const latest = await response.json();
       if (!Array.isArray(latest.models) || latest.models.length < 100) throw new Error('Invalid model data');
-      data = latest;
-      searchData.value = latest.models;
+      const knownDates = new Map(fallbackData.models.map(model => [model.id, model.releaseDate]));
+      data = { ...latest, models: latest.models.map(model => ({ ...model, releaseDate: model.releaseDate ?? knownDates.get(model.id) ?? null })) };
+      searchData.value = data.models;
       models = data.models.filter(m => [m.intelligence, m.cost, m.timeSeconds].every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0));
       providers = [...new Set(models.map(m => m.creator))].sort();
     } catch (error) {
@@ -458,6 +463,7 @@ onBeforeUnmount(() => {
           <li v-for="(model, index) in searchResults" :key="model.id">
             <button :id="`model-result-${index}`" type="button" :class="{ 'active-result': activeResult === index }" @focus="activeResult = index" @mouseenter="canPlot(model) && (activeResult = index)" :disabled="!ready || !canPlot(model)" @click="locateModel(model)">
               <strong>{{ model.name }}</strong>
+              <small>Release date: {{ formatReleaseDate(model.releaseDate) }}</small>
               <span class="result-metrics">
                 <span>Intelligence <b>{{ formatMetric(model.intelligence) }}</b></span>
                 <span>Cost <b>{{ formatMetric(model.cost, 4, '$') }}</b></span>
