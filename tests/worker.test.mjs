@@ -21,11 +21,14 @@ test('failed source fetch never overwrites last good snapshot; valid data is pub
     globalThis.fetch = async () => new Response('page structure changed');
     await assert.rejects(refresh(env), /initialData missing/);
     assert.equal(writes.length, 0);
-    const models = Array.from({ length: 100 }, (_, i) => ({ id: String(i), name: `Model ${i}`, creator: { name: 'Test' }, intelligenceIndex: 10, intelligenceIndexCostPerTask: { cost: { total: 1 } }, intelligenceIndexTimePerTask: 60 }));
+    const models = Array.from({ length: 100 }, (_, i) => ({ id: String(i), name: `Model ${i}`, creator: { name: 'Test' }, intelligenceIndex: 10, intelligenceIndexCostPerTask: { cost: { total: 1 } }, intelligenceIndexTimePerTask: 60, releaseDate:'2026-10-01' }));
+    models[1].release_date='2026-10-02';delete models[1].releaseDate;
     const flight = `"initialData":${JSON.stringify(models)}`;
     globalThis.fetch = async () => new Response(`self.__next_f.push([1,${JSON.stringify(flight)}])`);
     await refresh(env);
     assert.equal(writes.length, 1);
     assert.equal(JSON.parse(writes[0][1]).models.length, 100);
+    assert.equal(JSON.parse(writes[0][1]).models[0].releaseDate, '2026-10-01');
+    assert.equal(JSON.parse(writes[0][1]).models[1].releaseDate, '2026-10-02');
   } finally { globalThis.fetch = originalFetch; }
 });
