@@ -18,8 +18,6 @@ Axes use muted blue (intelligence), green (cost), and purple (time). Bounds star
 
 ## Data
 
-The language button switches chart labels, menus, search UI, and hints between Chinese and English. The preference survives reloads and changing language preserves the current selection and manual viewport. This branch adds language only; model filtering, themes, periodic data checks, and 3D reset/fitting are separate changes.
-
 Source: [Artificial Analysis](https://artificialanalysis.ai/models/). The checked-in snapshot contains 704 models and reasoning variants, of which 187 have all three required metrics. Missing values are never replaced with zero. Snapshot timestamps and original precision are retained in `src/data.json`; the live snapshot can differ after scheduled updates.
 
 Cost comes from `intelligenceIndexCostPerTask.cost.total`; time comes from `intelligenceIndexTimePerTask` in seconds and is converted to minutes for display. Time measures weighted decoding time, excluding TTFT and other overhead. See the [source methodology](https://artificialanalysis.ai/methodology).
