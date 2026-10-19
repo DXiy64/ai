@@ -545,6 +545,16 @@ summary::-webkit-details-marker {
     transition: none;
   }
 }
+/* Picker contrast when the optional dark theme is enabled. */
+html[data-theme="dark"] .version-bucket.latest > summary {
+  color: #9bd3bc;
+}
+html[data-theme="dark"] .version-bucket.unknown > summary {
+  color: #d3bc7c;
+}
+html[data-theme="dark"] .swatch {
+  filter: brightness(1.45);
+}
 @media (max-width: 600px) {
   .panel-head h1 {
     font-size: 13px;
