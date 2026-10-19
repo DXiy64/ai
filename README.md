@@ -6,17 +6,15 @@ Live site: [ai.mou7s.com](https://ai.mou7s.com)
 
 ## Using the chart
 
-- Use the upper-left menu to switch between free 3D, intelligence/time, cost/time, and intelligence/cost. Free 3D rotates; plane views only pan and never switch view on drag. There is no angle snapping.
-- Plane views consistently place better values at the upper right. Cost and time axes are reversed without changing their real values or units. Changing the selection automatically fits every selected point and connecting line with screen-space padding; single or coincident points stay centered. The Reset view button (or clicking the active view) restores this frame. Scroll zooms at the cursor from 1–50× relative to that fitted frame, with bounded panning. Manual zoom/pan is preserved through language/theme changes and resize. Points and lines grow within readable limits rather than scaling without a cap. Padding around zero does not introduce negative metric labels or change model values.
-- Models default to all selected. Search and filter by series, latest/previous versions, specific version, and effort level. Lines connect effort levels only within one version in planes; 3D shows points only. Newest versions without complete metrics are marked unavailable, not silently replaced by older releases.
-- Latest classification uses release dates when available, otherwise recognized version order; ambiguous versions remain unverified. Language (Chinese/English) and theme (light/dark) are saved locally; switching them preserves the current selection and viewport.
+- Drag to rotate, scroll to zoom, and hover over a point to inspect its metrics.
+- Press `1` for intelligence/time, `2` for cost/time, `3` for intelligence/cost, and `4` to return to free 3D. Plane views use orthographic projection with a locked angle; drag to pan. Better values point toward the upper right.
 - Press `/` to search by model or provider. Search ignores case and splits letters from numbers, so `deep4.1` matches DeepSeek V4.1 Flash.
 - Use ↑ / ↓ to select a search result, Enter to locate it, and Esc to close search. Results show intelligence, cost, and time; unavailable metrics appear as `—` and cannot be located.
-- Double-click a point in free 3D to center the camera without changing axis bounds or marker sizes. Search also locates points in planes without changing the current view.
+- Double-click a point to center the camera without changing axis bounds or marker sizes.
 - Right-click a point to hide it for the current browser session. Searching for a hidden model and selecting it restores it.
 - Press R to show all models and reset the current view. Shortcuts do not interrupt typing in the search field.
 
-3D axes use muted blue (intelligence), green (cost), and purple (time). Bounds start at zero and cover the full valid dataset, including on first load and after live updates. The **Ideal corner** marks the direction of higher intelligence, lower cost, and less time; it is not a combined model ranking.
+Axes use muted blue (intelligence), green (cost), and purple (time). Bounds start at zero and end on regular ticks. The **Ideal corner** marks the direction of higher intelligence, lower cost, and less time; it is not a combined model ranking.
 
 ## Data
 
@@ -41,15 +39,15 @@ Production uses Cloudflare Workers with Static Assets and the `MODEL_DATA` KV na
 
 Connect the existing `ai` Worker to Git using these Cloudflare Workers Builds settings:
 
-| Setting           | Value                               |
-| ----------------- | ----------------------------------- |
-| Repository        | `Mou7s/ai`                          |
-| Production branch | `main`                              |
-| Root directory    | Repository root                     |
-| Build command     | `bun run build`                     |
-| Deploy command    | `npx wrangler deploy`               |
-| Disable builds    | Off                                 |
-| Preview builds    | Off for production-only deployments |
+| Setting | Value |
+| --- | --- |
+| Repository | `Mou7s/ai` |
+| Production branch | `main` |
+| Root directory | Repository root |
+| Build command | `bun run build` |
+| Deploy command | `npx wrangler deploy` |
+| Disable builds | Off |
+| Preview builds | Off for production-only deployments |
 
 Once connected, pushing to `main` triggers a Cloudflare build and deployment to `ai.mou7s.com`. Check the Worker's Builds page for the commit, logs, and deployment result. Authentication is managed by Cloudflare Workers Builds; no GitHub Actions deployment token is needed. This repository intentionally has no separate GitHub Actions deployment workflow.
 
@@ -59,9 +57,7 @@ For manual deployment, run `bunx wrangler login`, then `bun run deploy`. The exi
 
 Cloudflare Cron refreshes model data every six hours (02:00, 08:00, 14:00, and 20:00 Asia/Shanghai). Valid snapshots are written to Workers KV. `/api/data` serves the current snapshot with a five-minute cache; unavailable KV data falls back to the deployed snapshot. Failed refreshes preserve the last successful snapshot.
 
-Scheduled refreshes do not change the Git snapshot or deploy code. The browser reads the same-origin `/api/data` on load, every five minutes, and when the page becomes visible. Invalid, older, or unavailable responses retain the current snapshot and selection. Inspect scheduled task logs in the Worker's Observability page and schedules in Triggers.
-
-The existing fetcher now retains `releaseDate` for version classification. The bundled snapshot restores previously recorded release metadata by stable model ID without changing upstream metrics. Legacy KV snapshots that omit that field retain known dates in the browser until the next successful scheduled refresh; unknown dates are not invented. No additional GitHub Actions fetcher, scraper, or GitHub raw-data polling is used.
+Scheduled refreshes do not change the Git snapshot or deploy code. Refresh an open page to load updated data. Inspect scheduled task logs in the Worker's Observability page and schedules in Triggers.
 
 To refresh the checked-in snapshot manually:
 
@@ -76,11 +72,9 @@ The refresh script uses Node's `--use-env-proxy`, reads public source data, and 
 
 ```sh
 bun run check
-bun run test
+node --test tests/worker.test.mjs
 bun run build
 bunx wrangler deploy --dry-run
 ```
 
 For a local scheduled refresh, run `bunx wrangler dev --test-scheduled` and request `/cdn-cgi/mf/scheduled`. Local KV is separate from production.
-
-For browser tests, run `bunx playwright install chromium`, serve the generated site (or run the local Worker), then run `BASE_URL=http://127.0.0.1:3000 bun run test:ui`. Set `PLAYWRIGHT_CHANNEL=chrome` to use an installed Chrome. Reports and screenshots go to ignored `test-results/`. Tests cover Nuxt hydration, the existing Cloudflare API and fallback, legacy release metadata, model selection, plane zoom/panning, preferences, and upstream search/center/hide/reset behavior.
