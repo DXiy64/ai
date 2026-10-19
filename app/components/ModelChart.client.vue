@@ -4,6 +4,38 @@ import fallbackData from '../../src/data.json';
 let data = fallbackData;
 import { onMounted, onBeforeUnmount, nextTick, ref, computed, watch } from 'vue';
 
+
+let themeMedia = null;
+function palette() {
+  const dark = themeMedia?.matches ?? window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return dark
+    ? { bg: '#101722', text: '#dbe5f2', grid: '#29394e', border: '#40516a', muted: '#a2b1c6', panel: '#182333', ability: '#9db9e5', cost: '#9ac8ae', time: '#c3a7e8' }
+    : { bg: '#ffffff', text: '#465366', grid: '#e0e6ee', border: '#cbd5e1', muted: '#64748b', panel: '#ffffff', ability: '#7b9bc9', cost: '#7ba58b', time: '#a18bc5' };
+}
+async function applySystemTheme() {
+  if (!ready || !chart.value) return;
+  const p = palette();
+  const patch = { paper_bgcolor: p.bg, plot_bgcolor: p.bg, 'font.color': p.text,
+    hoverlabel: { bgcolor: p.panel, bordercolor: p.border, font: { color: p.text, size: 12 } } };
+  const axes = currentView.value === '4'
+    ? [['scene.xaxis', p.ability], ['scene.yaxis', p.cost], ['scene.zaxis', p.time]]
+    : [['xaxis', currentView.value === '2' ? p.cost : p.ability], ['yaxis', currentView.value === '3' ? p.cost : p.time]];
+  for (const [axis, color] of axes) {
+    patch[axis + '.gridcolor'] = p.grid;
+    patch[axis + '.linecolor'] = p.border;
+    patch[axis + '.tickfont.color'] = color;
+    patch[axis + '.title.font.color'] = color;
+    if (currentView.value === '4') patch[axis + '.color'] = color;
+  }
+  if (currentView.value === '4') {
+    patch['scene.annotations[0].font.color'] = p.muted;
+    patch['scene.annotations[0].bgcolor'] = p.panel;
+  }
+  // Update presentation only: retain camera, axis ranges, and hidden models.
+  await Plotly.relayout(chart.value, patch);
+  await Plotly.restyle(chart.value, { 'marker.line.color': p.bg });
+}
+
 const STORAGE_KEY = 'ai_model_chart_hidden_ids';
 
 function getStoredHiddenIds() {
@@ -178,9 +210,9 @@ const axis = (title, range, color, hideZero = false, prefix = '') => {
   const ticks = Array.from({ length: Math.round(range[1] / step) + 1 }, (_, index) => index * step);
   return ({
   title: { text: currentView.value === '4' ? title : '', font: { size: 13, color } },
-  gridcolor: '#e0e6ee',
+  gridcolor: palette().grid,
   zeroline: false,
-  linecolor: '#d5dce5',
+  linecolor: palette().border,
   showbackground: false,
   tickfont: { size: 11, color },
   color,
@@ -213,7 +245,7 @@ function createTraces() {
         size: group.map(() => 5),
         color: colors[provider] || (group[0] && group[0].color),
         opacity: 0.9,
-        line: { color: '#ffffff', width: 0.6 }
+        line: { color: palette().bg, width: 0.6 }
       },
       hovertemplate:
         '<b>%{text}</b><br>Intelligence Index: %{x:.2f}<br>Cost per Task: $%{y:.4f}<br>Time per Task: %{z:.2f} min<br>Release date: %{hovertext}<br><span style="color:#94a3b8;font-size:11px;">Double-click to center · Right-click to hide</span><extra>' +
@@ -244,28 +276,28 @@ function getPlaneLayout(reset) {
   const horizontal = currentView.value === '2' ? 'cost' : 'intelligence';
   const vertical = currentView.value === '3' ? 'cost' : 'timeSeconds';
   const titles = { intelligence: 'Intelligence Index', cost: 'Cost per Task (USD)', timeSeconds: 'Time per Task (min)' };
-  const colors = { intelligence: '#7b9bc9', cost: '#7ba58b', timeSeconds: '#a18bc5' };
+  const colors = { intelligence: palette().ability, cost: palette().cost, timeSeconds: palette().time };
   const planeAxis = key => ({
     title: { text: titles[key], standoff: 16, font: { size: 13, color: colors[key] } },
     range: key === 'intelligence' ? modelRange(key) : modelRange(key, key === 'timeSeconds' ? 60 : 1).reverse(),
-    autorange: false, automargin: true, gridcolor: '#e0e6ee', zeroline: false,
+    autorange: false, automargin: true, gridcolor: palette().grid, zeroline: false,
     tickfont: { size: 11, color: colors[key] }, tickprefix: key === 'cost' ? '$' : '',
-    linecolor: '#d5dce5', fixedrange: false
+    linecolor: palette().border, fixedrange: false
   });
   return {
-    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
-    font: { family: 'Segoe UI, Microsoft YaHei, sans-serif', color: '#465366' },
+    paper_bgcolor: palette().bg, plot_bgcolor: palette().bg,
+    font: { family: 'Segoe UI, Microsoft YaHei, sans-serif', color: palette().text },
     margin: { l: 75, r: 30, t: 30, b: 90 }, showlegend: false, dragmode: 'pan',
     uirevision: reset ? Date.now() : (chart.value?.layout?.uirevision ?? 'plane'),
     xaxis: planeAxis(horizontal), yaxis: planeAxis(vertical),
-    hoverlabel: { bgcolor: '#ffffff', bordercolor: '#cbd5e1', font: { color: '#26354a', size: 12 } }
+    hoverlabel: { bgcolor: palette().panel, bordercolor: palette().border, font: { color: palette().text, size: 12 } }
   };
 }
 
 const getLayout = (resetCamera = false) => currentView.value !== '4' ? getPlaneLayout(resetCamera) : ({
-  paper_bgcolor: '#ffffff',
-  plot_bgcolor: '#ffffff',
-  font: { family: 'Segoe UI, Microsoft YaHei, sans-serif', color: '#465366' },
+  paper_bgcolor: palette().bg,
+  plot_bgcolor: palette().bg,
+  font: { family: 'Segoe UI, Microsoft YaHei, sans-serif', color: palette().text },
   margin: currentView.value === '4' ? { l: 20, r: 20, t: 20, b: 20 } : { l: 65, r: 30, t: 25, b: 75 },
   annotations: currentView.value === '4' ? [] : [
     { x: 0.5, y: 0, xref: 'paper', yref: 'paper', yshift: -18, text: currentView.value === '2' ? 'Cost per Task (USD)' : 'Intelligence Index', showarrow: false, font: { size: 13, color: currentView.value === '2' ? '#7ba58b' : '#7b9bc9' } },
@@ -274,9 +306,9 @@ const getLayout = (resetCamera = false) => currentView.value !== '4' ? getPlaneL
   showlegend: false,
   uirevision: resetCamera ? Date.now() : (chart.value?.layout?.uirevision ?? 'model-chart-camera'),
   scene: {
-    xaxis: { ...axis('X · Intelligence Index', modelRange('intelligence'), '#7b9bc9'), visible: planeViews[currentView.value]?.hidden !== 'xaxis' },
-    yaxis: { ...axis('Y · Cost per Task (USD)', modelRange('cost'), '#7ba58b', true, '$'), visible: planeViews[currentView.value]?.hidden !== 'yaxis' },
-    zaxis: { ...axis('Z · Time per Task (min)', modelRange('timeSeconds', 60), '#a18bc5', true), visible: planeViews[currentView.value]?.hidden !== 'zaxis' },
+    xaxis: { ...axis('X · Intelligence Index', modelRange('intelligence'), palette().ability), visible: planeViews[currentView.value]?.hidden !== 'xaxis' },
+    yaxis: { ...axis('Y · Cost per Task (USD)', modelRange('cost'), palette().cost, true, '$'), visible: planeViews[currentView.value]?.hidden !== 'yaxis' },
+    zaxis: { ...axis('Z · Time per Task (min)', modelRange('timeSeconds', 60), palette().time, true), visible: planeViews[currentView.value]?.hidden !== 'zaxis' },
     annotations: [{
       x: modelRange('intelligence')[1] - 0.001,
       y: modelRange('cost')[0] + 0.001,
@@ -289,8 +321,8 @@ const getLayout = (resetCamera = false) => currentView.value !== '4' ? getPlaneL
       arrowwidth: 1,
       ax: 0,
       ay: 32,
-      font: { size: 11, color: '#64748b' },
-      bgcolor: 'rgba(255,255,255,0.85)',
+      font: { size: 11, color: palette().muted },
+      bgcolor: palette().panel,
       borderpad: 4
     }],
     aspectmode: currentView.value === '4' ? 'cube' : 'manual',
@@ -298,7 +330,7 @@ const getLayout = (resetCamera = false) => currentView.value !== '4' ? getPlaneL
     camera: resetCamera ? viewCamera() : structuredClone(chart.value?._fullLayout?.scene?.camera ?? viewCamera()),
     dragmode: currentView.value === '4' ? 'orbit' : 'pan'
   },
-  hoverlabel: { bgcolor: '#ffffff', bordercolor: '#cbd5e1', font: { color: '#26354a', size: 12 } }
+  hoverlabel: { bgcolor: palette().panel, bordercolor: palette().border, font: { color: palette().text, size: 12 } }
 });
 
 async function hideModel(id) {
@@ -390,6 +422,8 @@ function handleDblClick(event) {
 
 onMounted(async () => {
   await nextTick();
+  themeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+  themeMedia.addEventListener('change', handleThemeChange);
   try {
     try {
       const response = await fetch('/api/data', { signal: AbortSignal.timeout(10000) });
@@ -443,7 +477,12 @@ onMounted(async () => {
   }
 });
 
+function handleThemeChange() {
+  applySystemTheme().catch(console.error);
+}
+
 onBeforeUnmount(() => {
+  themeMedia?.removeEventListener('change', handleThemeChange);
   ready = false;
   window.removeEventListener('keydown', resetView);
   window.removeEventListener('keydown', handleSearchKey);
@@ -535,5 +574,16 @@ onBeforeUnmount(() => {
 #reset-tip .action {
   color: #2563eb;
   font-weight: 500;
+}
+@media (prefers-color-scheme: dark) {
+  .search-overlay { background: #00000066; }
+  .model-search, .search-results, .model-search input, .search-results button, #reset-tip {
+    background: #182333; color: #dbe5f2; border-color: #40516a;
+  }
+  .search-help, .search-summary, .usage-help, .result-metrics { color: #a2b1c6; }
+  .result-metrics b { color: #dbe5f2; }
+  .search-results button.active-result, .search-results button:hover, .search-results button:focus-visible, #reset-tip:hover { background: #24374e; color: #dbe5f2; }
+  .search-results button:disabled, .search-results button:disabled .result-metrics, .search-results button:disabled .result-metrics b { color: #8595aa; }
+  #reset-tip .action { color: #93c5fd; }
 }
 </style>
