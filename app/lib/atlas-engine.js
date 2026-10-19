@@ -821,6 +821,7 @@ export function mountAtlas(root, options = {}) {
     options.onView?.(key);
     active = key;
     resetPlaneFit();
+    root.querySelector("#fit-selected").hidden = false;
     resetVersion++;
     wheelRanges = null;
     wheelTargets = null;
