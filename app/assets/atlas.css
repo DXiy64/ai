@@ -119,16 +119,19 @@ nav button span {
 }
 .actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
   margin: 5px 0;
 }
 .actions button {
+  white-space: nowrap;
   font-size: 11px;
   padding: 6px 8px;
   color: #3b71a4;
 }
 #count {
+  white-space: nowrap;
   font-size: 10px;
   color: #8592a3;
   margin-left: auto;
