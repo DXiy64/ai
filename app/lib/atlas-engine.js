@@ -879,6 +879,11 @@ export function mountAtlas(root, options = {}) {
   const heading = panel.querySelector("h1");
   heading.before(panelHead);
   panelHead.append(heading);
+  const preferences = document.createElement("div");
+  preferences.className = "preferences";
+  preferences.innerHTML =
+    '<button type="button" id="language-switch"></button>';
+  panelHead.append(preferences);
   function applyPresentation() {
     options.onPresentation?.(UI);
     document.title = t("appTitle");
@@ -918,9 +923,21 @@ export function mountAtlas(root, options = {}) {
         "aria-label",
         UI.lang === "zh" ? "选择视图" : "Choose view",
       );
+    const language = root.querySelector("#language-switch");
+    language.textContent = UI.lang === "zh" ? "EN" : "中文";
+    language.title = t(UI.lang === "zh" ? "toEnglish" : "toChinese");
+    language.setAttribute("aria-label", language.title);
     showDataStatus(lastDataMeta);
     updateOverlay();
   }
+  async function switchLanguage() {
+    UI.setLanguage(UI.lang === "zh" ? "en" : "zh");
+    applyPresentation();
+    drawPicker();
+    await render();
+  }
+  root.querySelector("#language-switch").onclick = () =>
+    switchLanguage().catch(console.error);
   function showDataStatus(meta = {}) {
     lastDataMeta = meta;
     const date = new Intl.DateTimeFormat(UI.lang === "zh" ? "zh-CN" : "en-GB", {

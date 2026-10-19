@@ -1,9 +1,8 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs/promises");
 const { chromium } = require("playwright");
-const features = new Set(
-  (process.env.FEATURES || "").split(",").filter(Boolean),
-);
+const requested = process.env.FEATURES ?? process.argv[2];
+const features = new Set((requested || "").split(",").filter(Boolean));
 (async () => {
   const browser = await chromium.launch({
     channel: process.env.PLAYWRIGHT_CHANNEL || undefined,
@@ -40,6 +39,16 @@ const features = new Set(
     await page.waitForFunction(() =>
       document.querySelector("#data-status").textContent.includes("Cloudflare"),
     );
+    if (requested === undefined) {
+      for (const [feature, selector] of [
+        ["models", "#picker"],
+        ["language", "#language-switch"],
+        ["theme", "#theme-switch"],
+      ])
+        if (await page.locator(selector).count()) features.add(feature);
+      if (await page.locator("#fit-selected").isVisible())
+        features.add("reset");
+    }
     for (const [feature, selector] of [
       ["models", "#picker"],
       ["language", "#language-switch"],
@@ -207,6 +216,19 @@ const features = new Set(
       await page.evaluate(() => compareLab.pollSnapshot());
       await settle();
       assert.deepEqual((await inspect()).ids, ids);
+    }
+    if (features.has("language") || features.has("theme")) {
+      await page.reload();
+      await page.waitForFunction(() => window.ready && window.compareLab);
+      await page.evaluate(() => window.ready);
+      await settle();
+      if (features.has("language"))
+        assert.equal(await page.locator("html").getAttribute("lang"), "en");
+      if (features.has("theme"))
+        assert.equal(
+          await page.locator("html").getAttribute("data-theme"),
+          "dark",
+        );
     }
     await page.setViewportSize({ width: 390, height: 844 });
     await page.waitForTimeout(250);

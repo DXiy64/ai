@@ -76,8 +76,89 @@ const dictionary = {
     usdTask: "美元 / 任务",
     minutesTask: "分钟 / 任务",
   },
+  en: {
+    idealCorner: "◇ Ideal corner",
+    idealHint:
+      "Higher intelligence, lower cost and time; not a combined ranking",
+    appTitle: "AI Model Compare",
+    free: "Free view",
+    front: "Front",
+    side: "Side",
+    top: "Top",
+    ability: "Intelligence",
+    cost: "Cost",
+    time: "Time",
+    abilityTitle: "Intelligence Index (higher is better)",
+    costTitle: "Cost · USD / task (lower is better)",
+    timeTitle: "Time · min / task (lower is better)",
+    ability3d: "Intelligence Index",
+    cost3d: "Cost · USD / task",
+    time3d: "Time · min / task",
+    notes:
+      "Higher intelligence; lower cost and time.|Time excludes TTFT and other overhead.",
+    picker: "Choose models",
+    search: "Search models or providers…",
+    all: "Select all",
+    clear: "Clear",
+    fit: "Reset view",
+    fitHelp: "Reset zoom and pan to show all selected models, keeping filters",
+    chosen: "{n} variants selected",
+    summary: "{chosen} / {total} series · {selected} / {models} variants",
+    latest: "Latest models",
+    old: "Previous models",
+    unknown: "Version unverified",
+    versions: "{n} versions",
+    modes: "{n} levels",
+    missing: "No metrics",
+    missingNote: "Incomplete metrics; unavailable in chart",
+    standard: "Standard",
+    released: "released",
+    nonReasoning: "Non-reasoning",
+    reasoning: "Reasoning",
+    noResults: "No matching models",
+    show: "Show {name}",
+    showSeries: "Show {name} series",
+    latestBasis:
+      "Based on {basis} in this dataset; version order is used if dates are absent",
+    sameSeries: "{label} in this series",
+    basisDate: "release date",
+    basisVersion: "version order",
+    basisOnly: "the only recorded version",
+    empty: "No models selected",
+    emptyHint: "Choose models in the menu to compare",
+    freeHint:
+      "Drag to rotate · Scroll to zoom · Double-click center · Right-click hide · / Search · R Reset",
+    planeHint:
+      "Selection auto-fits · Drag to pan · Scroll to zoom at cursor · Reset view shows all selected points",
+    axisCaption: "X: {x} · Y: {y} · Upper right is better on these two metrics",
+    threeCaption:
+      "X: Intelligence Index · Y: Cost (USD / task) · Z: Time (min / task)",
+    worse: "Lower left: worse",
+    better: "Upper right: better ↗",
+    reset: "Switch to and reset {name}",
+    snapshot: "Data {date}",
+    checking: "Checking updates",
+    projectChecks: "Cloudflare data",
+    retained: "Update failed; keeping snapshot",
+    local: "Bundled snapshot",
+    hourly: "Cloudflare updates every 6 hours",
+    dataHelp: "Data comes from the existing Cloudflare backend.",
+    sourceState: "Source status: ",
+    invalid: "Invalid model snapshot",
+    tooFew: "Too few complete models; keeping snapshot",
+    unavailable: "Snapshot service unavailable",
+    expand: "Expand",
+    collapse: "Collapse",
+    toEnglish: "Switch to English",
+    toChinese: "Switch to Chinese",
+    toDark: "Switch to dark theme",
+    toLight: "Switch to light theme",
+    zoomLimit: "1–50× relative to the fitted selection",
+    usdTask: "USD / task",
+    minutesTask: "min / task",
+  },
 };
-let lang = "zh",
+let lang = saved("model-atlas-language", "zh"),
   theme = "light";
 function saved(key, fallback) {
   try {
@@ -119,6 +200,13 @@ const UI = {
       /\{(\w+)\}/g,
       (_, name) => values[name] ?? "",
     ),
+  setLanguage(value) {
+    lang = value === "en" ? "en" : "zh";
+    try {
+      localStorage.setItem("model-atlas-language", lang);
+    } catch {}
+    apply();
+  },
 };
 apply();
 export default UI;
