@@ -4,6 +4,7 @@ import * as ModelCatalog from "./catalog.js";
 import AtlasUI from "./preferences.js";
 import markup from "./panel.html?raw";
 import { validateSnapshot } from "./snapshot.js";
+import { fitAxis, metricTicks } from "./plane-fit.js";
 
 export function mountAtlas(root, options = {}) {
   root.innerHTML = markup;
@@ -64,7 +65,10 @@ export function mountAtlas(root, options = {}) {
     wheelTargets = null,
     wheelFrame = 0,
     wheelBusy = false,
-    currentPlaneRanges = null;
+    currentPlaneRanges = null,
+    planeFrame = null,
+    planeAutoFit = true,
+    frameGeometry = "";
   const initialCamera = {
     eye: { x: 1.65, y: -1.65, z: 1.1 },
     up: { x: 0, y: 0, z: 1 },
@@ -243,12 +247,71 @@ export function mountAtlas(root, options = {}) {
       };
     });
   }
+
+  function resetPlaneFit() {
+    planeFrame = null;
+    planeAutoFit = true;
+    currentPlaneRanges = null;
+    planeZoomValue = 1;
+    resetVersion++;
+    wheelRanges = null;
+    wheelTargets = null;
+    cancelAnimationFrame(wheelFrame);
+    wheelFrame = 0;
+  }
+  function preparePlaneFrame() {
+    const m = margin(),
+      width = Math.max(40, innerWidth - m.l - m.r),
+      height = Math.max(40, innerHeight - m.t - m.b);
+    const signature = [...selected].sort().join("|"),
+      geometry = width + ":" + height;
+    if (
+      !planeFrame ||
+      planeFrame.view !== active ||
+      planeFrame.selection !== signature ||
+      (planeAutoFit && frameGeometry !== geometry)
+    ) {
+      resetPlaneFit();
+      const view = views[active],
+        chosen = models.filter((model) => selected.has(model.id)),
+        style = pointStyle();
+      planeFrame = {
+        view: active,
+        selection: signature,
+        ranges: {
+          [view.x]: fitAxis(
+            chosen.map(metrics[view.x].get),
+            metrics[view.x].range,
+            width,
+            style,
+          ),
+          [view.y]: fitAxis(
+            chosen.map(metrics[view.y].get),
+            metrics[view.y].range,
+            height,
+            style,
+          ),
+        },
+      };
+      frameGeometry = geometry;
+    }
+  }
+  const planeBounds = (key) => planeFrame?.ranges[key] || metrics[key].range;
+  async function fitSelected() {
+    if (active === "free") return;
+    resetPlaneFit();
+    await render();
+  }
+
   function axis2d(key) {
     const s = metrics[key],
       p = UI.palette;
     return {
       title: { text: s.title, font: { size: 12, color: p.text }, standoff: 16 },
-      range: key === "ability" ? clone(s.range) : clone(s.range).reverse(),
+      range:
+        key === "ability"
+          ? clone(planeBounds(key))
+          : clone(planeBounds(key)).reverse(),
       autorange: false,
       nticks: 8,
       exponentformat: "none",
@@ -273,6 +336,10 @@ export function mountAtlas(root, options = {}) {
       currentPlaneRanges.revision === resetVersion
     )
       spec.range = clone(currentPlaneRanges[axis]);
+    const ticks = metricTicks(spec.range);
+    spec.tickmode = "array";
+    spec.tickvals = ticks.values;
+    spec.tickformat = ticks.format;
     return spec;
   }
   function axis3d(key) {
@@ -339,7 +406,7 @@ export function mountAtlas(root, options = {}) {
     );
   }
   function boundRange(range, key) {
-    const full = metrics[key].range,
+    const full = planeBounds(key),
       extent = full[1] - full[0],
       lo = Math.min(...range),
       hi = Math.max(...range),
@@ -361,7 +428,15 @@ export function mountAtlas(root, options = {}) {
       ]) {
         const current = plane._fullLayout[axis].range,
           next = boundRange(current, key),
-          tolerance = (metrics[key].range[1] - metrics[key].range[0]) * 1e-8;
+          tolerance = (planeBounds(key)[1] - planeBounds(key)[0]) * 1e-8;
+        const ticks = metricTicks(next);
+        if (
+          JSON.stringify(plane._fullLayout[axis].tickvals) !==
+          JSON.stringify(ticks.values)
+        ) {
+          patch[axis + ".tickvals"] = ticks.values;
+          patch[axis + ".tickformat"] = ticks.format;
+        }
         if (current.some((n, i) => Math.abs(n - next[i]) > tolerance)) {
           patch[axis + ".range"] = next;
           patch[axis + ".autorange"] = false;
@@ -370,7 +445,7 @@ export function mountAtlas(root, options = {}) {
       if (Object.keys(patch).length) await Plotly.relayout(plane, patch);
       const l = plane._fullLayout,
         z = (axis, key) =>
-          (metrics[key].range[1] - metrics[key].range[0]) /
+          (planeBounds(key)[1] - planeBounds(key)[0]) /
           Math.abs(l[axis].range[1] - l[axis].range[0]);
       planeZoomValue = Math.max(
         1,
@@ -467,13 +542,14 @@ export function mountAtlas(root, options = {}) {
       ["x", v.x],
       ["y", v.y],
     ]) {
-      const full = metrics[key].range[1] - metrics[key].range[0],
+      const full = planeBounds(key)[1] - planeBounds(key)[0],
         span = Math.abs(previous[axis][1] - previous[axis][0]);
       minFactor = Math.max(minFactor, full / MAX_PLANE_ZOOM / span);
       maxFactor = Math.min(maxFactor, full / span);
     }
     factor = Math.max(minFactor, Math.min(maxFactor, factor));
     if (Math.abs(factor - 1) < 1e-10) return;
+    planeAutoFit = false;
     const next = { view: active, revision: resetVersion };
     for (const [axis, key] of [
       ["x", v.x],
@@ -505,6 +581,7 @@ export function mountAtlas(root, options = {}) {
       plane,
       "pointerdown",
       () => {
+        planeAutoFit = false;
         wheelRanges = null;
         wheelTargets = null;
         cancelAnimationFrame(wheelFrame);
@@ -513,6 +590,7 @@ export function mountAtlas(root, options = {}) {
       true,
     );
     bindPointActions(plane);
+    listen(plane, "dblclick", () => fitSelected().catch(console.error));
     planeBound = true;
   }
 
@@ -611,6 +689,7 @@ export function mountAtlas(root, options = {}) {
     try {
       do {
         renderRequested = false;
+        if (active !== "free") preparePlaneFrame();
         const key = active,
           m = margin(),
           p = UI.palette,
@@ -732,7 +811,7 @@ export function mountAtlas(root, options = {}) {
               responsive: true,
               displayModeBar: false,
               scrollZoom: true,
-              doubleClick: "reset",
+              doubleClick: false,
             },
           );
           bindPlaneEvents();
@@ -747,6 +826,8 @@ export function mountAtlas(root, options = {}) {
   async function setView(key) {
     options.onView?.(key);
     active = key;
+    resetPlaneFit();
+    root.querySelector("#fit-selected").hidden = key === "free";
     resetVersion++;
     wheelRanges = null;
     wheelTargets = null;
@@ -964,6 +1045,8 @@ export function mountAtlas(root, options = {}) {
     syncPicker();
     render().catch(console.error);
   });
+  root.querySelector("#fit-selected").onclick = () =>
+    fitSelected().catch(console.error);
   listen(root.querySelector("#search"), "input", drawPicker);
   root.querySelector("#select-all").onclick = () => {
     sessionHidden.clear();
@@ -988,6 +1071,10 @@ export function mountAtlas(root, options = {}) {
     resizeFrame = requestAnimationFrame(async () => {
       updateOverlay();
       const el = active === "free" ? three : plane;
+      if (active !== "free" && planeAutoFit) {
+        await render();
+        return;
+      }
       if (el._fullLayout) {
         await Plotly.relayout(el, { margin: margin() });
         await Plotly.Plots.resize(el);
@@ -1044,6 +1131,8 @@ export function mountAtlas(root, options = {}) {
     search.setAttribute("aria-label", t("search"));
     root.querySelector("#select-all").textContent = t("all");
     root.querySelector("#clear-all").textContent = t("clear");
+    root.querySelector("#fit-selected").textContent = t("fit");
+    root.querySelector("#fit-selected").title = t("fitHelp");
     document
       .querySelector("nav")
       .setAttribute(
@@ -1142,6 +1231,7 @@ export function mountAtlas(root, options = {}) {
     for (const m of models)
       if (allSelected || oldChosen.has(m.id)) selected.add(m.id);
     updateMetricRanges();
+    if (planeAutoFit) planeFrame = null;
     drawPicker();
     render().catch(console.error);
     return true;
@@ -1209,6 +1299,10 @@ export function mountAtlas(root, options = {}) {
       Plotly.purge(plane);
     },
     setView,
+    fitSelected,
+    get autoFit() {
+      return planeAutoFit;
+    },
     identity,
     applySnapshot,
     pollSnapshot,

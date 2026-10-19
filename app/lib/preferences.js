@@ -22,6 +22,8 @@ const dictionary = {
     search: "搜索模型或厂商…",
     all: "全选",
     clear: "清空",
+    fit: "适配",
+    fitHelp: "按当前所选模型的点和连线自动适配视图",
     chosen: "已选 {n} 个档位",
     summary: "{chosen} / {total} 个系列 · {selected} / {models} 个档位",
     latest: "最新模型",
@@ -47,7 +49,7 @@ const dictionary = {
     emptyHint: "在菜单中勾选模型，开始对比",
     freeHint: "拖动旋转 · 滚轮缩放 · 双击定位 · 右键隐藏 · / 搜索 · R 复位",
     planeHint:
-      "拖动平移 · 滚轮按鼠标位置缩放 · 点击当前视图复位 · 连线按思维档位排序",
+      "筛选后自动适配 · 拖动平移 · 滚轮按鼠标位置缩放 · 点击适配恢复完整所选",
     axisCaption: "横轴：{x} · 纵轴：{y} · 右上角表示当前两项指标更优",
     threeCaption:
       "X：能力（Intelligence Index） · Y：成本（USD / 任务） · Z：时间（分钟 / 任务）",
@@ -71,7 +73,7 @@ const dictionary = {
     toChinese: "切换为中文",
     toDark: "切换深色模式",
     toLight: "切换浅色模式",
-    zoomLimit: "平面缩放范围：1–50 倍",
+    zoomLimit: "以当前所选模型的适配范围为 1 倍，可放大至 50 倍",
     usdTask: "美元 / 任务",
     minutesTask: "分钟 / 任务",
   },
@@ -99,6 +101,8 @@ const dictionary = {
     search: "Search models or providers…",
     all: "Select all",
     clear: "Clear",
+    fit: "Fit",
+    fitHelp: "Fit the selected model points and connecting lines",
     chosen: "{n} variants selected",
     summary: "{chosen} / {total} series · {selected} / {models} variants",
     latest: "Latest models",
@@ -126,7 +130,7 @@ const dictionary = {
     freeHint:
       "Drag to rotate · Scroll to zoom · Double-click center · Right-click hide · / Search · R Reset",
     planeHint:
-      "Drag to pan · Scroll to zoom at cursor · Click current view to reset · Lines follow effort order",
+      "Selection auto-fits · Drag to pan · Scroll to zoom at cursor · Fit restores all selected points",
     axisCaption: "X: {x} · Y: {y} · Upper right is better on these two metrics",
     threeCaption:
       "X: Intelligence Index · Y: Cost (USD / task) · Z: Time (min / task)",
@@ -151,7 +155,7 @@ const dictionary = {
     toChinese: "Switch to Chinese",
     toDark: "Switch to dark theme",
     toLight: "Switch to light theme",
-    zoomLimit: "Plane zoom range: 1–50×",
+    zoomLimit: "1–50× relative to the fitted selection",
     usdTask: "USD / task",
     minutesTask: "min / task",
   },

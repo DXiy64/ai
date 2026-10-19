@@ -11,8 +11,8 @@
     "refresh-data": "node --use-env-proxy scripts/refresh-data.mjs",
     "check": "bun scripts/check-data.mjs",
     "postinstall": "bun --bun nuxt prepare",
-    "test": "node --test tests/worker.test.mjs tests/catalog.test.mjs",
-    "test:ui": "node tests/preferences-zoom.cjs && node tests/catalog-ui.cjs && node tests/nuxt-integration.cjs",
+    "test": "node --test tests/worker.test.mjs tests/catalog.test.mjs tests/plane-fit.test.mjs",
+    "test:ui": "node tests/preferences-zoom.cjs && node tests/catalog-ui.cjs && node tests/nuxt-integration.cjs && node tests/selection-fit.cjs",
     "format": "prettier --write app tests README.md package.json"
   },
   "engines": {
