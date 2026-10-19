@@ -20,7 +20,7 @@ const { chromium } = require("playwright");
     p.on("pageerror", (e) => errors.push(e.message));
     await p.route("**/api/data", (r) => r.fulfill({ json: source }));
     await p.goto(process.env.BASE_URL || "http://127.0.0.1:4173/");
-    await p.waitForFunction(()=>window.ready&&window.compareLab);
+    await p.waitForFunction(() => window.ready && window.compareLab);
     await p.evaluate(() => window.ready);
     const settle = async () => {
       await p.waitForFunction(() => !compareLab.busy);
@@ -207,7 +207,7 @@ const { chromium } = require("playwright");
     assert.equal(await p.evaluate(() => compareLab.selected.length), selected);
     await p.screenshot({ path: "test-results/preview-en-dark.png" });
     await p.reload();
-    await p.waitForFunction(()=>window.ready&&window.compareLab);
+    await p.waitForFunction(() => window.ready && window.compareLab);
     await p.evaluate(() => window.ready);
     await settle();
     assert.equal(await p.locator("html").getAttribute("lang"), "en");
@@ -227,13 +227,42 @@ const { chromium } = require("playwright");
     const before3d = await p.evaluate(
       () => document.querySelector("#chart3d").data[0].marker.size,
     );
+    const beforePoints = await p.evaluate(() => {
+      const c = document.querySelector("#chart3d");
+      window.scrollRestyles = 0;
+      c.on("plotly_restyle", () => window.scrollRestyles++);
+      return c.data.flatMap((trace) =>
+        trace.customdata.map((d, i) => [d[4], trace.marker.color[i]]),
+      );
+    });
     await p.mouse.move(900, 450);
-    for (let i = 0; i < 4; i++) await p.mouse.wheel(0, -120);
+    for (let i = 0; i < 12; i++) {
+      await p.mouse.wheel(0, -60);
+      await p.waitForTimeout(16);
+    }
+    await p.waitForTimeout(250);
     await settle();
     const after3d = await p.evaluate(
       () => document.querySelector("#chart3d").data[0].marker.size,
     );
-    assert.ok(after3d >= before3d && after3d <= 4.5);
+    assert.ok(after3d > before3d && after3d <= 4.5);
+    const afterPoints = await p.evaluate(() => {
+      const c = document.querySelector("#chart3d");
+      return {
+        traces: c.data.length,
+        restyles: window.scrollRestyles,
+        points: c.data.flatMap((trace) =>
+          trace.customdata.map((d, i) => [d[4], trace.marker.color[i]]),
+        ),
+      };
+    });
+    assert.equal(afterPoints.traces, 1);
+    assert.ok(
+      afterPoints.restyles <= 2,
+      `wheel burst triggered ${afterPoints.restyles} extra restyles`,
+    );
+    assert.deepEqual(afterPoints.points, beforePoints);
+    assert.ok(new Set(beforePoints.map((d) => d[1])).size > 1);
     await p.locator("#theme-switch").click();
     await settle();
     await p.screenshot({ path: "test-results/preview-3d-dark.png" });

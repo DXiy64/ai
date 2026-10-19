@@ -54,6 +54,7 @@ export function mountAtlas(root, options = {}) {
     busy = false,
     renderRequested = false,
     threeBound = false,
+    threeStyleTimer = 0,
     resizeFrame = 0,
     planeBound = false,
     planeZoomValue = 1,
@@ -201,7 +202,30 @@ export function mountAtlas(root, options = {}) {
     ]);
   }
   function tracesFor(key) {
-    return visibleGroups().map((f) => {
+    const groups = visibleGroups();
+    if (key === "free") {
+      const models = groups.flatMap((f) => f.models);
+      // One WebGL trace keeps the draw cost independent of version count.
+      return [
+        {
+          type: "scatter3d",
+          mode: "markers",
+          customdata: groups.flatMap(dataFor),
+          hovertemplate: hoverTemplate(),
+          showlegend: false,
+          x: models.map(metrics.ability.get),
+          y: models.map(metrics.cost.get),
+          z: models.map(metrics.time.get),
+          marker: {
+            size: size3d(),
+            color: groups.flatMap((f) => f.models.map(() => colour(f))),
+            opacity: 0.88,
+            line: { color: UI.palette.bg, width: 0.35 },
+          },
+        },
+      ];
+    }
+    return groups.map((f) => {
       const common = {
         name: f.name,
         legendgroup: f.key,
@@ -209,21 +233,6 @@ export function mountAtlas(root, options = {}) {
         hovertemplate: hoverTemplate(),
         showlegend: false,
       };
-      if (key === "free")
-        return {
-          ...common,
-          type: "scatter3d",
-          mode: "markers",
-          x: f.models.map(metrics.ability.get),
-          y: f.models.map(metrics.cost.get),
-          z: f.models.map(metrics.time.get),
-          marker: {
-            size: size3d(),
-            color: colour(f),
-            opacity: 0.88,
-            line: { color: UI.palette.bg, width: 0.35 },
-          },
-        };
       const v = views[key],
         style = pointStyle(),
         connect =
@@ -751,18 +760,24 @@ export function mountAtlas(root, options = {}) {
             },
           );
           if (!threeBound) {
-            three.on("plotly_relayout", async (e) => {
+            three.on("plotly_relayout", (e) => {
               camera3d = clone(
                 e["scene.camera"] ||
                   three._fullLayout?.scene?._scene?.getCamera() ||
                   camera3d,
               );
-              const size = size3d();
-              if (
-                three.data.length &&
-                Math.abs((three.data[0].marker?.size ?? 0) - size) > 0.025
-              )
-                await Plotly.restyle(three, { "marker.size": size });
+              clearTimeout(threeStyleTimer);
+              // Camera motion already redraws the scene. Restyle only once idle.
+              threeStyleTimer = setTimeout(() => {
+                threeStyleTimer = 0;
+                if (disposed || active !== "free" || busy) return;
+                const size = size3d();
+                if (
+                  three.data.length &&
+                  Math.abs((three.data[0].marker?.size ?? 0) - size) > 0.025
+                )
+                  Plotly.restyle(three, { "marker.size": size });
+              }, 160);
             });
             bindPointActions(three);
             threeBound = true;
@@ -824,6 +839,7 @@ export function mountAtlas(root, options = {}) {
     }
   }
   async function setView(key) {
+    clearTimeout(threeStyleTimer);
     options.onView?.(key);
     active = key;
     resetPlaneFit();
@@ -1289,6 +1305,7 @@ export function mountAtlas(root, options = {}) {
     hideModel,
     destroy() {
       disposed = true;
+      clearTimeout(threeStyleTimer);
       requestController?.abort();
       observer.disconnect();
       clearInterval(interval);
