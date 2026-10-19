@@ -1,9 +1,8 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs/promises");
 const { chromium } = require("playwright");
-const features = new Set(
-  (process.env.FEATURES || "").split(",").filter(Boolean),
-);
+const requested = process.env.FEATURES ?? process.argv[2];
+const features = new Set((requested || "").split(",").filter(Boolean));
 (async () => {
   const browser = await chromium.launch({
     channel: process.env.PLAYWRIGHT_CHANNEL || undefined,
@@ -20,12 +19,13 @@ const features = new Set(
       viewport: { width: 1440, height: 960 },
     });
     let calls = 0,
-      invalid = false;
+      invalid = false,
+      response = source;
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.route("**/api/data", (route) => {
       calls++;
-      return route.fulfill({ json: invalid ? { models: [] } : source });
+      return route.fulfill({ json: invalid ? { models: [] } : response });
     });
     if (features.has("live")) await page.clock.install();
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/");
@@ -40,6 +40,16 @@ const features = new Set(
     await page.waitForFunction(() =>
       document.querySelector("#data-status").textContent.includes("Cloudflare"),
     );
+    if (requested === undefined) {
+      for (const [feature, selector] of [
+        ["models", "#picker"],
+        ["language", "#language-switch"],
+        ["theme", "#theme-switch"],
+      ])
+        if (await page.locator(selector).count()) features.add(feature);
+      if (await page.locator("#fit-selected").isVisible())
+        features.add("reset");
+    }
     for (const [feature, selector] of [
       ["models", "#picker"],
       ["language", "#language-switch"],
@@ -195,6 +205,18 @@ const features = new Set(
     );
     await page.keyboard.press("Escape");
     if (features.has("live")) {
+      const target = await page.evaluate(() => compareLab.selected[0]);
+      const value =
+        source.models.find((model) => model.id === target).intelligence + 1;
+      response = {
+        ...source,
+        retrievedAt: new Date(
+          Date.parse(source.retrievedAt) + 1000,
+        ).toISOString(),
+        models: source.models.map((model) =>
+          model.id === target ? { ...model, intelligence: value } : model,
+        ),
+      };
       const oldCalls = calls;
       await page.clock.fastForward(5 * 60 * 1000 + 1000);
       await settle();
@@ -202,11 +224,46 @@ const features = new Set(
         calls > oldCalls,
         "visible page polls the existing API every five minutes",
       );
+      await page.waitForFunction(
+        ({ target, value }) =>
+          compareLab.models.find((model) => model.id === target)
+            .intelligence === value,
+        { target, value },
+      );
+      await settle();
+      assert.deepEqual(
+        (await inspect()).ids,
+        zoomed.ids,
+        "data updates preserve visible models",
+      );
+      const visibleCalls = calls;
+      await page.evaluate(() =>
+        document.dispatchEvent(new Event("visibilitychange")),
+      );
+      await page.waitForFunction(() => !compareLab.busy);
+      await page.waitForTimeout(150);
+      assert.ok(
+        calls > visibleCalls,
+        "returning to a visible page checks the existing API",
+      );
       invalid = true;
       const ids = (await inspect()).ids;
       await page.evaluate(() => compareLab.pollSnapshot());
       await settle();
       assert.deepEqual((await inspect()).ids, ids);
+      response = source;
+      invalid = false;
+      await page.evaluate(() => compareLab.pollSnapshot());
+      await settle();
+      assert.equal(
+        await page.evaluate(
+          (target) =>
+            compareLab.models.find((model) => model.id === target).intelligence,
+          target,
+        ),
+        value,
+        "older snapshots do not overwrite the update",
+      );
     }
     await page.setViewportSize({ width: 390, height: 844 });
     await page.waitForTimeout(250);

@@ -1021,7 +1021,15 @@ export function mountAtlas(root, options = {}) {
   showDataStatus();
   const ready = setView("free");
   ready.then(pollSnapshot).catch(console.error);
-  const interval = null;
+  const interval = setInterval(
+    () => {
+      if (!document.hidden) pollSnapshot();
+    },
+    5 * 60 * 1000,
+  );
+  listen(document, "visibilitychange", () => {
+    if (!document.hidden) pollSnapshot();
+  });
   const api = {
     ready,
     get selectedModels() {

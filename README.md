@@ -57,7 +57,7 @@ For manual deployment, run `bunx wrangler login`, then `bun run deploy`. The exi
 
 Cloudflare Cron refreshes model data every six hours (02:00, 08:00, 14:00, and 20:00 Asia/Shanghai). Valid snapshots are written to Workers KV. `/api/data` serves the current snapshot with a five-minute cache; unavailable KV data falls back to the deployed snapshot. Failed refreshes preserve the last successful snapshot.
 
-Scheduled refreshes do not change the Git snapshot or deploy code. Refresh an open page to load updated data. Inspect scheduled task logs in the Worker's Observability page and schedules in Triggers.
+Scheduled refreshes do not change the Git snapshot or deploy code. The page checks the same-origin API every five minutes while visible and when it becomes visible. Valid newer data is applied without losing model visibility; invalid, older or unavailable snapshots retain the current data. This does not add a scraper or modify Cloudflare's existing six-hour schedule. Inspect scheduled task logs in the Worker's Observability page and schedules in Triggers.
 
 To refresh the checked-in snapshot manually:
 
