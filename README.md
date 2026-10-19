@@ -18,7 +18,7 @@ Axes use muted blue (intelligence), green (cost), and purple (time). Bounds star
 
 ## Data
 
-Reset view is visible in 3D too. It restores the initial direction, center, and zoom, preserving current hidden models. It does not change metric axis ranges, unlike the separate 3D space-fitting feature.
+Reset view is visible in 3D too. It restores the default direction, tightens ability/cost/time ranges to the visible models with padding, and fits the entire coordinate box to the window. Metric values and units stay unchanged. Visibility changes refit automatically; rotating/zooming or locating a point preserves manual view until reset. Single points stay centered with finite ranges and empty selections use full-data bounds. No model picker or preference controls are required.
 
 Source: [Artificial Analysis](https://artificialanalysis.ai/models/). The checked-in snapshot contains 704 models and reasoning variants, of which 187 have all three required metrics. Missing values are never replaced with zero. Snapshot timestamps and original precision are retained in `src/data.json`; the live snapshot can differ after scheduled updates.
 
