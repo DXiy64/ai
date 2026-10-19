@@ -5,6 +5,7 @@ import AtlasUI from "./preferences.js";
 import markup from "./panel.html?raw";
 import { validateSnapshot } from "./snapshot.js";
 import { fitAxis, metricTicks } from "./plane-fit.js";
+import { fitCamera } from "./camera-fit.js";
 
 export function mountAtlas(root, options = {}) {
   root.innerHTML = markup;
@@ -76,6 +77,10 @@ export function mountAtlas(root, options = {}) {
     projection: { type: "perspective" },
   };
   let camera3d = clone(initialCamera);
+  let threeAutoFit = true,
+    threeSelection = "",
+    threeRanges = null;
+  const threeBounds = (key) => threeRanges?.[key] || metrics[key].range;
   const metrics = {
     ability: {
       name: "能力",
@@ -352,10 +357,11 @@ export function mountAtlas(root, options = {}) {
     )[key];
     return {
       title: { text: s.axis3d, font: { size: 13, color } },
-      range: clone(s.range),
+      range: clone(threeBounds(key)),
       autorange: false,
-      dtick: s.step,
-      tickformat: s.format,
+      tickmode: "array",
+      tickvals: metricTicks(threeBounds(key)).values,
+      tickformat: metricTicks(threeBounds(key)).format,
       tickprefix: s.prefix || "",
       tickfont: { size: 11, color },
       tickangle: 0,
@@ -639,10 +645,11 @@ export function mountAtlas(root, options = {}) {
     syncPicker();
     await render();
     if (active === "free") {
+      threeAutoFit = false;
       const scene = three._fullLayout?.scene,
         toScene = (key, value, aspect = 1) =>
-          ((value - metrics[key].range[0]) /
-            (metrics[key].range[1] - metrics[key].range[0]) -
+          ((value - threeBounds(key)[0]) /
+            (threeBounds(key)[1] - threeBounds(key)[0]) -
             0.5) *
           aspect;
       const center = {
@@ -710,6 +717,33 @@ export function mountAtlas(root, options = {}) {
             },
           };
         if (key === "free") {
+          const signature = [...selected].sort().join("|");
+          if (signature !== threeSelection) threeAutoFit = true;
+          threeSelection = signature;
+          if (threeAutoFit) {
+            const chosen = models.filter((model) => selected.has(model.id));
+            threeRanges = Object.fromEntries(
+              ["ability", "cost", "time"].map((metric) => [
+                metric,
+                fitAxis(
+                  chosen.map(metrics[metric].get),
+                  metrics[metric].range,
+                  600,
+                  { size: 5, width: 0.6 },
+                ),
+              ]),
+            );
+            // Frame the entire fitted axis box, including its empty corners.
+            const corners = [-0.5, 0.5].flatMap((x) =>
+              [-0.5, 0.5].flatMap((y) => [-0.5, 0.5].map((z) => [x, y, z])),
+            );
+            camera3d = fitCamera(
+              corners,
+              initialCamera,
+              Math.max(40, innerWidth - m.l - m.r),
+              Math.max(40, innerHeight - m.t - m.b),
+            );
+          }
           await Plotly.react(
             three,
             tracesFor(key),
@@ -725,9 +759,9 @@ export function mountAtlas(root, options = {}) {
                 dragmode: "orbit",
                 annotations: [
                   {
-                    x: metrics.ability.range[1] - 0.001,
-                    y: 0.001,
-                    z: 0.001,
+                    x: threeBounds("ability")[1],
+                    y: threeBounds("cost")[0],
+                    z: threeBounds("time")[0],
                     text: t("idealCorner"),
                     hovertext: t("idealHint"),
                     showarrow: true,
@@ -751,7 +785,19 @@ export function mountAtlas(root, options = {}) {
             },
           );
           if (!threeBound) {
+            const manualView = () => {
+              threeAutoFit = false;
+            };
+            listen(three, "wheel", manualView, {
+              capture: true,
+              passive: true,
+            });
+            listen(three, "pointerdown", manualView, {
+              capture: true,
+              passive: true,
+            });
             three.on("plotly_relayout", (e) => {
+              if (e["scene.camera"] && !busy) threeAutoFit = false;
               camera3d = clone(
                 e["scene.camera"] ||
                   three._fullLayout?.scene?._scene?.getCamera() ||
@@ -829,7 +875,10 @@ export function mountAtlas(root, options = {}) {
     cancelAnimationFrame(wheelFrame);
     wheelFrame = 0;
     planeZoomValue = 1;
-    if (key === "free") camera3d = clone(initialCamera);
+    if (key === "free") {
+      camera3d = clone(initialCamera);
+      threeAutoFit = true;
+    }
     three.hidden = key !== "free";
     plane.hidden = key === "free";
     root.querySelectorAll("[data-view]").forEach((b) => {
@@ -861,12 +910,21 @@ export function mountAtlas(root, options = {}) {
     resizeFrame = requestAnimationFrame(async () => {
       updateOverlay();
       const el = active === "free" ? three : plane;
-      if (active !== "free" && planeAutoFit) {
+      if (
+        (active === "free" && threeAutoFit) ||
+        (active !== "free" && planeAutoFit)
+      ) {
         await render();
         return;
       }
       if (el._fullLayout) {
-        await Plotly.relayout(el, { margin: margin() });
+        const patch = { margin: margin() };
+        if (active === "free") {
+          // A layout-only redraw can otherwise reuse the pre-drag camera.
+          camera3d = clone(three._fullLayout.scene._scene.getCamera());
+          patch["scene.camera"] = clone(camera3d);
+        }
+        await Plotly.relayout(el, patch);
         await Plotly.Plots.resize(el);
       }
     });
