@@ -146,6 +146,156 @@ const fs = require("node:fs/promises"),
         ),
       ).length,
     );
+    // Check the real WebGL projection, not just the camera-fit formula.
+    const inspect3d = () =>
+      p.evaluate(() => {
+        const chart = document.querySelector("#chart3d"),
+          scene = chart._fullLayout.scene._scene;
+        const { model, view, projection } = scene.glplot.cameraParams;
+        const multiply = (matrix, point) =>
+          [0, 1, 2, 3].map((row) =>
+            point.reduce(
+              (sum, v, column) => sum + matrix[column * 4 + row] * v,
+              0,
+            ),
+          );
+        const projected = chart.data.flatMap((trace) =>
+          trace.x.map((x, i) => {
+            const point = [x, trace.y[i], trace.z[i]].map(
+              (v, axis) => v * scene.dataScale[axis],
+            );
+            const clip = multiply(
+              projection,
+              multiply(view, multiply(model, [...point, 1])),
+            );
+            return [clip[0] / clip[3], clip[1] / clip[3], clip[3]];
+          }),
+        );
+        const bounds = scene.glplot.bounds;
+        const box = [0, 1].flatMap((x) =>
+          [0, 1].flatMap((y) =>
+            [0, 1].map((z) => {
+              const clip = multiply(
+                projection,
+                multiply(
+                  view,
+                  multiply(model, [
+                    bounds[x][0],
+                    bounds[y][1],
+                    bounds[z][2],
+                    1,
+                  ]),
+                ),
+              );
+              return [clip[0] / clip[3], clip[1] / clip[3], clip[3]];
+            }),
+          ),
+        );
+        return {
+          camera: scene.getCamera(),
+          projected,
+          box,
+          ids: chart.data.flatMap((trace) => trace.customdata.map((d) => d[4])),
+          ranges: [
+            chart.layout.scene.xaxis.range,
+            chart.layout.scene.yaxis.range,
+            chart.layout.scene.zaxis.range,
+          ],
+        };
+      });
+    await p.locator("[data-view=free]").click();
+    await settle();
+    assert.equal(await p.locator("#fit-selected").isVisible(), true);
+    const all3d = await inspect3d();
+    await choose(ids);
+    const fitted3d = await inspect3d();
+    assert.equal(fitted3d.ids.length, 45);
+    assert.ok(
+      fitted3d.ranges[2][1] < 15,
+      "fast selection does not retain the full 75 minute axis",
+    );
+    for (const [axis, metric, scale] of [
+      [0, "intelligence", 1],
+      [1, "cost", 1],
+      [2, "timeSeconds", 60],
+    ]) {
+      const values = data.models
+        .filter((m) => ids.includes(m.id))
+        .map((m) => m[metric] / scale);
+      const [low, high] = fitted3d.ranges[axis];
+      assert.ok(
+        low <= Math.min(...values) && high >= Math.max(...values),
+        "fitted axes preserve every selected value",
+      );
+      assert.ok(
+        (Math.max(...values) - Math.min(...values)) / (high - low) > 0.8,
+        "selected data fills each coordinate axis",
+      );
+    }
+    const assertVisible = (state) => {
+      assert.ok(
+        state.projected.every(
+          ([x, y, w]) => w > 0 && Math.abs(x) < 0.95 && Math.abs(y) < 0.95,
+        ),
+        "every selected marker fits inside the real WebGL viewport",
+      );
+    };
+    assertVisible(all3d);
+    assertVisible(fitted3d);
+    assert.ok(
+      Math.max(
+        ...[0, 1].map(
+          (axis) =>
+            Math.max(...fitted3d.box.map((p) => p[axis])) -
+            Math.min(...fitted3d.box.map((p) => p[axis])),
+        ),
+      ) > 1,
+      "the whole fitted coordinate box uses at least half the viewport",
+    );
+    assertVisible({ projected: fitted3d.box });
+    await p.screenshot({ path: "test-results/3d-fitted-axis-box.png" });
+    await p.mouse.move(650, 350);
+    await p.mouse.wheel(0, -120);
+    await p.mouse.down();
+    await p.mouse.move(700, 400, { steps: 5 });
+    await p.mouse.up();
+    await p.waitForTimeout(500);
+    assert.notDeepEqual((await inspect3d()).camera, fitted3d.camera);
+    await p.locator("#fit-selected").click();
+    await settle();
+    const reset3d = await inspect3d();
+    assert.deepEqual(reset3d.ids, fitted3d.ids, "3D reset keeps filters");
+    for (const part of ["eye", "center", "up"])
+      for (const axis of ["x", "y", "z"])
+        assert.ok(
+          Math.abs(reset3d.camera[part][axis] - fitted3d.camera[part][axis]) <
+            1e-6,
+          "reset restores direction, center, and fitted zoom",
+        );
+    await p.waitForTimeout(700);
+    assert.deepEqual(
+      (await inspect3d()).camera,
+      reset3d.camera,
+      "reset camera stays stable",
+    );
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.waitForTimeout(300);
+    await settle();
+    assertVisible(await inspect3d());
+    await choose([ids[0]]);
+    const single3d = await inspect3d();
+    assert.equal(single3d.ids.length, 1);
+    assert.ok(
+      single3d.projected.every(
+        ([x, y]) => Math.abs(x) < 1e-5 && Math.abs(y) < 1e-5,
+      ),
+      "single 3D point is centered",
+    );
+    await p.locator("#clear-all").click();
+    await settle();
+    await p.locator("#fit-selected").click();
+    await settle();
+    assert.equal((await inspect3d()).ids.length, 0);
     assert.deepEqual(errors, []);
     await fs.mkdir("test-results", { recursive: true });
     await fs.writeFile(
@@ -159,6 +309,13 @@ const fs = require("node:fs/promises"),
           singlePointCentered: true,
           emptySafe: true,
           allPointsRetained: true,
+          threeD: {
+            resetKeepsSelection: true,
+            projectionFit: true,
+            responsive: true,
+            singlePointCentered: true,
+            emptySafe: true,
+          },
           errors,
         },
         null,

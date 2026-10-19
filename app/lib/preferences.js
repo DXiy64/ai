@@ -23,7 +23,7 @@ const dictionary = {
     all: "全选",
     clear: "清空",
     fit: "重置视图",
-    fitHelp: "重置缩放和平移，显示当前所选模型的完整视野，保留筛选",
+    fitHelp: "恢复默认视角并适配当前所选模型的完整视野，保留筛选",
     chosen: "已选 {n} 个档位",
     summary: "{chosen} / {total} 个系列 · {selected} / {models} 个档位",
     latest: "最新模型",
@@ -102,7 +102,8 @@ const dictionary = {
     all: "Select all",
     clear: "Clear",
     fit: "Reset view",
-    fitHelp: "Reset zoom and pan to show all selected models, keeping filters",
+    fitHelp:
+      "Restore the default view and fit all selected models, keeping filters",
     chosen: "{n} variants selected",
     summary: "{chosen} / {total} series · {selected} / {models} variants",
     latest: "Latest models",
