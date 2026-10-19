@@ -18,8 +18,6 @@ Axes use muted blue (intelligence), green (cost), and purple (time). Bounds star
 
 ## Data
 
-The model picker defaults to all models and groups series → latest/previous/unverified → version → effort level, with search and partial selection. Version colors are stable; lines join effort levels of the same version only in planes. Release dates take precedence over recognizable version numbers; ambiguous versions remain unverified, and incomplete latest releases are not silently replaced. The separate release-date metadata PR improves classification when combined with this feature. Language/theme controls and periodic API checks are separate changes.
-
 Source: [Artificial Analysis](https://artificialanalysis.ai/models/). The checked-in snapshot contains 704 models and reasoning variants, of which 187 have all three required metrics. Missing values are never replaced with zero. Snapshot timestamps and original precision are retained in `src/data.json`; the live snapshot can differ after scheduled updates.
 
 Cost comes from `intelligenceIndexCostPerTask.cost.total`; time comes from `intelligenceIndexTimePerTask` in seconds and is converted to minutes for display. Time measures weighted decoding time, excluding TTFT and other overhead. See the [source methodology](https://artificialanalysis.ai/methodology).
