@@ -54,7 +54,6 @@ export function mountAtlas(root, options = {}) {
     busy = false,
     renderRequested = false,
     threeBound = false,
-    threeStyleTimer = 0,
     resizeFrame = 0,
     planeBound = false,
     planeZoomValue = 1,
@@ -181,16 +180,6 @@ export function mountAtlas(root, options = {}) {
       c = c.replace("44%", "64%").replace(", .48)", ", .65)");
     return c;
   }
-  function size3d() {
-    const eye = camera3d.eye,
-      center = camera3d.center,
-      d = Math.hypot(eye.x - center.x, eye.y - center.y, eye.z - center.z),
-      original = Math.hypot(...Object.values(initialCamera.eye));
-    return Math.max(
-      2.8,
-      Math.min(4.5, 3.2 * Math.pow(original / Math.max(0.01, d), 0.2)),
-    );
-  }
   function dataFor(f) {
     return f.models.map((m) => [
       esc(m.name),
@@ -217,7 +206,8 @@ export function mountAtlas(root, options = {}) {
           y: models.map(metrics.cost.get),
           z: models.map(metrics.time.get),
           marker: {
-            size: size3d(),
+            // Keep native 3D camera interaction free of style redraws.
+            size: 3.2,
             color: groups.flatMap((f) => f.models.map(() => colour(f))),
             opacity: 0.88,
             line: { color: UI.palette.bg, width: 0.35 },
@@ -766,18 +756,6 @@ export function mountAtlas(root, options = {}) {
                   three._fullLayout?.scene?._scene?.getCamera() ||
                   camera3d,
               );
-              clearTimeout(threeStyleTimer);
-              // Camera motion already redraws the scene. Restyle only once idle.
-              threeStyleTimer = setTimeout(() => {
-                threeStyleTimer = 0;
-                if (disposed || active !== "free" || busy) return;
-                const size = size3d();
-                if (
-                  three.data.length &&
-                  Math.abs((three.data[0].marker?.size ?? 0) - size) > 0.025
-                )
-                  Plotly.restyle(three, { "marker.size": size });
-              }, 160);
             });
             bindPointActions(three);
             threeBound = true;
@@ -839,7 +817,6 @@ export function mountAtlas(root, options = {}) {
     }
   }
   async function setView(key) {
-    clearTimeout(threeStyleTimer);
     options.onView?.(key);
     active = key;
     resetPlaneFit();
@@ -1305,7 +1282,6 @@ export function mountAtlas(root, options = {}) {
     hideModel,
     destroy() {
       disposed = true;
-      clearTimeout(threeStyleTimer);
       requestController?.abort();
       observer.disconnect();
       clearInterval(interval);

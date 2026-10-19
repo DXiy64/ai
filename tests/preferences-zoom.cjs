@@ -231,6 +231,13 @@ const { chromium } = require("playwright");
       const c = document.querySelector("#chart3d");
       window.scrollRestyles = 0;
       c.on("plotly_restyle", () => window.scrollRestyles++);
+      window.cameraDistances = [];
+      window.cameraSampleTimer = setInterval(() => {
+        const { eye, center } = c._fullLayout.scene._scene.getCamera();
+        window.cameraDistances.push(
+          Math.hypot(eye.x - center.x, eye.y - center.y, eye.z - center.z),
+        );
+      }, 20);
       return c.data.flatMap((trace) =>
         trace.customdata.map((d, i) => [d[4], trace.marker.color[i]]),
       );
@@ -240,27 +247,32 @@ const { chromium } = require("playwright");
       await p.mouse.wheel(0, -60);
       await p.waitForTimeout(16);
     }
-    await p.waitForTimeout(250);
+    await p.waitForTimeout(700);
     await settle();
     const after3d = await p.evaluate(
       () => document.querySelector("#chart3d").data[0].marker.size,
     );
-    assert.ok(after3d > before3d && after3d <= 4.5);
+    assert.equal(after3d, before3d);
     const afterPoints = await p.evaluate(() => {
       const c = document.querySelector("#chart3d");
+      clearInterval(window.cameraSampleTimer);
       return {
         traces: c.data.length,
         restyles: window.scrollRestyles,
+        distances: window.cameraDistances,
         points: c.data.flatMap((trace) =>
           trace.customdata.map((d, i) => [d[4], trace.marker.color[i]]),
         ),
       };
     });
     assert.equal(afterPoints.traces, 1);
-    assert.ok(
-      afterPoints.restyles <= 2,
-      `wheel burst triggered ${afterPoints.restyles} extra restyles`,
-    );
+    assert.equal(afterPoints.restyles, 0);
+    assert.ok(afterPoints.distances.at(-1) < afterPoints.distances[0] * 0.8);
+    for (let i = 1; i < afterPoints.distances.length; i++)
+      assert.ok(
+        afterPoints.distances[i] <= afterPoints.distances[i - 1] + 0.001,
+        "3D zoom must not jump back during the burst or after settling",
+      );
     assert.deepEqual(afterPoints.points, beforePoints);
     assert.ok(new Set(beforePoints.map((d) => d[1])).size > 1);
     await p.locator("#theme-switch").click();
