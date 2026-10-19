@@ -11,7 +11,7 @@
     "refresh-data": "node --use-env-proxy scripts/refresh-data.mjs",
     "check": "bun scripts/check-data.mjs",
     "postinstall": "bun --bun nuxt prepare",
-    "test": "node --test tests/worker.test.mjs tests/plane-fit.test.mjs",
+    "test": "node --test tests/worker.test.mjs tests/plane-fit.test.mjs tests/catalog.test.mjs",
     "test:ui": "node tests/restoration-ui.cjs",
     "format": "prettier --write app tests README.md package.json"
   },

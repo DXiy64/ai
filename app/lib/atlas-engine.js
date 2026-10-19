@@ -840,22 +840,226 @@ export function mountAtlas(root, options = {}) {
     if ((key === "free" ? three : plane)._fullLayout)
       await Plotly.Plots.resize(key === "free" ? three : plane);
   }
-  function syncPicker() {
-    options.onSelection?.([...selected], models);
-    root.querySelector("#selection-summary").textContent =
-      t("chosen", { n: selected.size }) + " / " + models.length;
-    updateOverlay();
+  const openedNodes = new Set(),
+    closedNodes = new Set();
+  function nodeExpanded(node, requested = false) {
+    return openedNodes.has(node) || (!closedNodes.has(node) && requested);
+  }
+  function updateExpander(detail) {
+    const summary = detail.querySelector(":scope > summary"),
+      button = summary?.querySelector(":scope > .expander");
+    if (!button) return;
+    const name =
+      summary.querySelector(".family-name")?.textContent ||
+      summary.querySelector("label span")?.textContent ||
+      summary.childNodes[0]?.textContent ||
+      "";
+    button.setAttribute("aria-expanded", String(detail.open));
+    button.setAttribute(
+      "aria-label",
+      t(detail.open ? "collapse" : "expand") + " " + name,
+    );
+    button.title = button.getAttribute("aria-label");
+  }
+  function decorateExpanders() {
+    root.querySelectorAll("details > summary").forEach((summary) => {
+      const detail = summary.parentElement;
+      if (detail.classList.contains("single")) return;
+      if (!summary.querySelector(":scope > .expander")) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "expander";
+        button.innerHTML =
+          '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        button.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          detail.open = !detail.open;
+          updateExpander(detail);
+        };
+        summary.append(button);
+      }
+      updateExpander(detail);
+    });
+  }
+  listen(
+    document,
+    "toggle",
+    (e) => {
+      if (e.target instanceof HTMLDetailsElement) {
+        updateExpander(e.target);
+        const node = e.target.dataset.node;
+        if (node) {
+          if (e.target.open) {
+            openedNodes.add(node);
+            closedNodes.delete(node);
+          } else {
+            openedNodes.delete(node);
+            closedNodes.add(node);
+          }
+        }
+      }
+    },
+    true,
+  );
+  function effortLabel(mode) {
+    return mode === "non-reasoning"
+      ? t("nonReasoning")
+      : mode === "reasoning"
+        ? t("reasoning")
+        : effortNames[mode] || t("standard");
+  }
+  function basisLabel(value) {
+    return t(
+      value === "发布日期"
+        ? "basisDate"
+        : value === "版本号"
+          ? "basisVersion"
+          : "basisOnly",
+    );
+  }
+  function versionHTML(f, expand) {
+    const node = "v:" + f.key,
+      meta = [
+        f.released !== null
+          ? new Date(f.released).toISOString().slice(0, 10) +
+            " " +
+            t("released")
+          : "",
+        f.qualifier,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+    return `<details class="family ${f.entries.length === 1 ? "single" : ""} ${!f.models.length ? "unavailable" : ""}" data-index="${f.index}" data-node="${esc(node)}" ${nodeExpanded(node, expand) ? "open" : ""}><summary><label title="${esc(f.name + " · " + f.creator + " · " + meta)}"><input type="checkbox" data-family="${f.index}" aria-label="${esc(t("show", { name: f.name }))}"><i class="swatch" style="background:${f.color}"></i><span class="version-caption"><span class="family-name">${esc(f.name)}</span>${meta ? '<small class="version-meta">' + esc(meta) + "</small>" : ""}</span><span class="family-count">${f.models.length ? t("modes", { n: f.models.length }) : t("missing")}</span></label></summary>${f.entries.length > 1 ? '<div class="modes">' + f.entries.map((m) => `<label class="${!ModelCatalog.complete(m) ? "unavailable" : ""}" title="${esc(m.name)}"><input type="checkbox" data-model="${m.id}" ${!ModelCatalog.complete(m) ? "disabled" : ""} aria-label="${esc(t("show", { name: m.name }))}">${esc(effortLabel(m.effort))}${!ModelCatalog.complete(m) ? " · " + t("missing") : ""}</label>`).join("") + "</div>" : ""}${!f.models.length ? '<div class="version-note">' + t("missingNote") + "</div>" : ""}</details>`;
   }
   function drawPicker() {
+    const list = root.querySelector("#model-list");
+    list.querySelectorAll("[data-node]").forEach((el) => {
+      el.open
+        ? openedNodes.add(el.dataset.node)
+        : openedNodes.delete(el.dataset.node);
+    });
+    const needle = root.querySelector("#search").value.trim().toLowerCase(),
+      matches = (f) =>
+        (
+          f.name +
+          " " +
+          f.creator +
+          " " +
+          f.qualifier +
+          " " +
+          f.entries.map((m) => m.name).join(" ")
+        )
+          .toLowerCase()
+          .includes(needle);
+    list.innerHTML =
+      series
+        .map((s) => {
+          const rootMatch = (s.name + " " + s.creator)
+              .toLowerCase()
+              .includes(needle),
+            shown = s.versions.filter((f) => rootMatch || matches(f));
+          if (!shown.length) return "";
+          const node = "s:" + s.key,
+            buckets = ["latest", "old", "unknown"]
+              .map((key) => {
+                const label = t(key),
+                  versions = s[key].filter((f) => shown.includes(f));
+                if (!versions.length) return "";
+                const n = "b:" + s.key + ":" + key;
+                return `<details class="version-bucket ${key}" data-node="${esc(n)}" ${nodeExpanded(n, !!needle || key === "latest") ? "open" : ""}><summary><label title="${esc(key === "latest" ? t("latestBasis", { basis: basisLabel(s.basis) }) : t("sameSeries", { label }))}"><input type="checkbox" data-bucket="${key}" data-root="${s.index}" aria-label="${esc(t("show", { name: s.name + " " + label }))}"><span>${label}</span><span class="family-count">${t("versions", { n: s[key].length })}</span></label></summary><div class="bucket-children">${versions.map((f) => versionHTML(f, !!needle)).join("")}</div></details>`;
+              })
+              .join("");
+          return `<details class="series-node" data-series-node="${s.index}" data-node="${esc(node)}" ${nodeExpanded(node, !!needle) ? "open" : ""}><summary><label title="${esc(s.creator + " · " + s.name)}"><input type="checkbox" data-series="${s.index}" aria-label="${esc(t("showSeries", { name: s.name }))}"><span class="family-name">${esc(s.name)}</span><span class="family-count">${t("versions", { n: s.versions.length })}</span></label></summary><div class="series-children">${buckets}</div></details>`;
+        })
+        .join("") || '<div class="no-results">' + t("noResults") + "</div>";
     syncPicker();
+    decorateExpanders();
   }
+  function checkNode(el, entries) {
+    const n = entries.filter((m) => selected.has(m.id)).length;
+    el.disabled = entries.length === 0;
+    el.checked = entries.length > 0 && n === entries.length;
+    el.indeterminate = n > 0 && n < entries.length;
+  }
+  function syncPicker() {
+    options.onSelection?.([...selected], models);
+    const chosenSeries = series.filter((s) =>
+      s.versions.some((f) => f.models.some((m) => selected.has(m.id))),
+    ).length;
+    root.querySelector("#selection-summary").textContent = t("summary", {
+      chosen: chosenSeries,
+      total: series.length,
+      selected: selected.size,
+      models: models.length,
+    });
+    root.querySelector("#count").textContent = t("chosen", {
+      n: selected.size,
+    });
+    root.querySelectorAll("[data-series]").forEach((el) =>
+      checkNode(
+        el,
+        series[+el.dataset.series].versions.flatMap((f) => f.models),
+      ),
+    );
+    root.querySelectorAll("[data-bucket]").forEach((el) =>
+      checkNode(
+        el,
+        series[+el.dataset.root][el.dataset.bucket].flatMap((f) => f.models),
+      ),
+    );
+    document
+      .querySelectorAll("[data-family]")
+      .forEach((el) => checkNode(el, families[+el.dataset.family].models));
+    root.querySelectorAll("[data-model]").forEach((el) => {
+      el.checked = selected.has(el.dataset.model);
+    });
+    updateOverlay();
+  }
+  listen(root.querySelector("#model-list"), "change", (e) => {
+    const el = e.target;
+    let entries;
+    if (el.dataset.series !== undefined)
+      entries = series[+el.dataset.series].versions.flatMap((f) => f.models);
+    else if (el.dataset.bucket !== undefined)
+      entries = series[+el.dataset.root][el.dataset.bucket].flatMap(
+        (f) => f.models,
+      );
+    else if (el.dataset.family !== undefined)
+      entries = families[+el.dataset.family].models;
+    else if (el.dataset.model)
+      entries = models.filter((m) => m.id === el.dataset.model);
+    else return;
+    for (const m of entries)
+      el.checked ? selected.add(m.id) : selected.delete(m.id);
+    if (el.checked) {
+      for (const m of entries) sessionHidden.delete(m.id);
+      options.onHidden?.([...sessionHidden]);
+    }
+    syncPicker();
+    render().catch(console.error);
+  });
   root.querySelector("#fit-selected").onclick = () =>
     fitSelected().catch(console.error);
+  listen(root.querySelector("#search"), "input", drawPicker);
+  root.querySelector("#select-all").onclick = () => {
+    sessionHidden.clear();
+    options.onHidden?.([]);
+    models.forEach((m) => selected.add(m.id));
+    syncPicker();
+    render().catch(console.error);
+  };
+  root.querySelector("#clear-all").onclick = () => {
+    selected.clear();
+    syncPicker();
+    render().catch(console.error);
+  };
   document
     .querySelectorAll("[data-view]")
     .forEach(
       (b) => (b.onclick = () => setView(b.dataset.view).catch(console.error)),
     );
+  if (matchMedia("(max-width:600px)").matches) picker.open = false;
   function resize() {
     cancelAnimationFrame(resizeFrame);
     resizeFrame = requestAnimationFrame(async () => {
@@ -910,6 +1114,12 @@ export function mountAtlas(root, options = {}) {
     const notes = root.querySelector(".notes");
     notes.innerHTML = t("notes").split("|").map(esc).join("<br>");
     notes.append(dataStatus);
+    picker.querySelector(":scope > summary").textContent = t("picker");
+    const search = root.querySelector("#search");
+    search.placeholder = t("search");
+    search.setAttribute("aria-label", t("search"));
+    root.querySelector("#select-all").textContent = t("all");
+    root.querySelector("#clear-all").textContent = t("clear");
     root.querySelector("#fit-selected").textContent = t("fit");
     root.querySelector("#fit-selected").title = t("fitHelp");
     document
@@ -919,6 +1129,7 @@ export function mountAtlas(root, options = {}) {
         UI.lang === "zh" ? "选择视图" : "Choose view",
       );
     showDataStatus(lastDataMeta);
+    decorateExpanders();
     updateOverlay();
   }
   function showDataStatus(meta = {}) {
