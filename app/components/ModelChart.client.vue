@@ -216,7 +216,7 @@ function createTraces() {
         line: { color: '#ffffff', width: 0.6 }
       },
       hovertemplate:
-        '<b>%{text}</b><br>Release date: %{hovertext}<br>Intelligence Index: %{x:.2f}<br>Cost per Task: $%{y:.4f}<br>Time per Task: %{z:.2f} min<br><span style="color:#94a3b8;font-size:11px;">Double-click to center · Right-click to hide</span><extra>' +
+        '<b>%{text}</b><br>Intelligence Index: %{x:.2f}<br>Cost per Task: $%{y:.4f}<br>Time per Task: %{z:.2f} min<br>Release date: %{hovertext}<br><span style="color:#94a3b8;font-size:11px;">Double-click to center · Right-click to hide</span><extra>' +
         escape(provider) +
         '</extra>'
     };
@@ -231,7 +231,7 @@ function createTraces() {
       marker: { ...trace.marker, size: 9 },
       hovertext: trace.customdata.map(id => {
         const model = models.find(model => model.id === id);
-        return `<b>${escape(model.name)}</b><br>Release date: ${formatReleaseDate(model.releaseDate)}<br>Intelligence Index: ${model.intelligence.toFixed(2)}<br>Cost per Task: $${model.cost.toFixed(4)}<br>Time per Task: ${(model.timeSeconds / 60).toFixed(2)} min`;
+        return `<b>${escape(model.name)}</b><br>Intelligence Index: ${model.intelligence.toFixed(2)}<br>Cost per Task: $${model.cost.toFixed(4)}<br>Time per Task: ${(model.timeSeconds / 60).toFixed(2)} min<br>Release date: ${formatReleaseDate(model.releaseDate)}`;
       }),
       hovertemplate: '%{hovertext}<extra>' + escape(trace.name) + '</extra>'
     };
