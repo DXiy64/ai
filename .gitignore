@@ -4,5 +4,7 @@ dist/
 .env*
 !.env.example
 
+.nuxt/
+.output/
+
 test-results/
-src/data.json.tmp

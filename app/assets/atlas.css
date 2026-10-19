@@ -577,3 +577,11 @@ html[data-theme="dark"] .swatch {
     min-width: 30px;
   }
 }
+
+.atlas-host {
+  width: 100%;
+  height: 100dvh;
+}
+html[data-theme="light"] {
+  color-scheme: light;
+}

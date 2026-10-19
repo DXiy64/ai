@@ -18,11 +18,9 @@ const { chromium } = require("playwright");
       errors = [],
       report = [];
     p.on("pageerror", (e) => errors.push(e.message));
-    await p.route(
-      "https://raw.githubusercontent.com/Mou7s/ai/main/src/data.json",
-      (r) => r.fulfill({ json: source }),
-    );
+    await p.route("**/api/data", (r) => r.fulfill({ json: source }));
     await p.goto(process.env.BASE_URL || "http://127.0.0.1:4173/");
+    await p.waitForFunction(()=>window.ready&&window.compareLab);
     await p.evaluate(() => window.ready);
     const settle = async () => {
       await p.waitForFunction(() => !compareLab.busy);
@@ -209,6 +207,7 @@ const { chromium } = require("playwright");
     assert.equal(await p.evaluate(() => compareLab.selected.length), selected);
     await p.screenshot({ path: "test-results/preview-en-dark.png" });
     await p.reload();
+    await p.waitForFunction(()=>window.ready&&window.compareLab);
     await p.evaluate(() => window.ready);
     await settle();
     assert.equal(await p.locator("html").getAttribute("lang"), "en");

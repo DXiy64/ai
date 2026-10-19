@@ -26,11 +26,11 @@ const { chromium } = require("playwright");
     const p = await b.newPage({ viewport: { width: 1440, height: 960 } }),
       errors = [];
     p.on("pageerror", (e) => errors.push(e.message));
-    await p.route(
-      "https://raw.githubusercontent.com/Mou7s/ai/main/src/data.json",
-      (route) => route.fulfill({ json: incoming.data }),
+    await p.route("**/api/data", (route) =>
+      route.fulfill({ json: incoming.data }),
     );
     await p.goto(process.env.BASE_URL || "http://127.0.0.1:4173/");
+    await p.waitForFunction(()=>window.ready&&window.compareLab);
     await p.evaluate(() => window.ready);
     const settle = async () => {
       await p.waitForFunction(() => !compareLab.busy);
@@ -196,6 +196,7 @@ const { chromium } = require("playwright");
     // Reload with the actual snapshot so QA screenshots contain no simulated dates.
     incoming = { data, meta: { status: "ready", via: "source" } };
     await p.reload();
+    await p.waitForFunction(()=>window.ready&&window.compareLab);
     await p.evaluate(() => window.ready);
     await settle();
     assert.equal(await p.evaluate(() => compareLab.models.length), total);

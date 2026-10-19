@@ -1,16 +1,5 @@
-import { refreshData } from "./source.mjs";
-const data = await refreshData({
-  htmlFile: process.argv[2],
-  fixtureDirectory: process.argv[3],
-});
-const complete = data.models.filter((m) =>
-  [m.intelligence, m.cost, m.timeSeconds].every((v) => v !== null),
-);
-console.log(
-  "Snapshot: " +
-    data.models.length +
-    " models; " +
-    complete.length +
-    " complete; " +
-    data.retrievedAt,
-);
+import { writeFile } from 'node:fs/promises';
+import { fetchSnapshot } from '../lib/model-data.mjs';
+const data = await fetchSnapshot();
+await writeFile(new URL('../src/data.json', import.meta.url), JSON.stringify(data, null, 2) + '\n');
+console.log(`Saved ${data.models.length} models.`);

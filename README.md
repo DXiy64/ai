@@ -1,60 +1,86 @@
-# ai · AI 模型对比
+# ai · 3D Model Chart
 
-线上地址：[ai.mou7s.com](https://ai.mou7s.com)。
+Explore AI models by Intelligence Index, Cost per Task (USD), and Time per Task (minutes).
 
-全屏三维散点与三个独立平面视图，比较能力、任务成本和任务时间。左上角菜单切换视图，不根据拖动或接近角度自动切换，也不添加吸附。
+Live site: [ai.mou7s.com](https://ai.mou7s.com)
 
-## 对比与操作
+## Using the chart
 
-- 自由视图：拖动旋转、滚轮缩放，仅显示散点。坐标为能力、成本、时间，悬停查看原始数值与单位。
-- 正视图：能力 × 时间；侧视图：成本 × 时间；俯视图：能力 × 成本。平面视图统一为左下较差、右上更优，成本与时间轴反向显示，数值不取反。
-- 平面拖动只平移，滚轮以鼠标位置为中心缩放，范围为 1–50 倍，平移受完整数据范围约束。再次点击当前视图可复位。
-- 平面点大小从 6px 缓慢增长至 10px，线宽从 1.3px 增长至 2.2px；自由视图的点大小也做有限调整，避免遮挡。
-- 同一具体版本的不同思维档位按顺序连线，各版本颜色稳定。自由视图隐藏所有连线；不会把不同版本连成一条线。
-- 默认显示全部有效数据。支持搜索及“系列 → 最新 / 旧版本 / 待确认 → 具体版本 → 思维档位”的复选筛选，父级显示部分选中状态。展开箭头支持鼠标和键盘。
-- 中英文和深浅色可切换，偏好保存在本浏览器。切换时保留筛选和当前视野；小屏布局根据浏览器尺寸调整。
+- Use the upper-left menu to switch between free 3D, intelligence/time, cost/time, and intelligence/cost. Free 3D rotates; plane views only pan and never switch view on drag. There is no angle snapping.
+- Plane views consistently place better values at the upper right. Cost and time axes are reversed without changing their real values or units. Scroll zooms at the cursor from 1–50×, with bounded panning; click the active view to reset. Points and lines grow within readable limits rather than scaling without a cap.
+- Models default to all selected. Search and filter by series, latest/previous versions, specific version, and effort level. Lines connect effort levels only within one version in planes; 3D shows points only. Newest versions without complete metrics are marked unavailable, not silently replaced by older releases.
+- Latest classification uses release dates when available, otherwise recognized version order; ambiguous versions remain unverified. Language (Chinese/English) and theme (light/dark) are saved locally; switching them preserves the current selection and viewport.
+- Press `/` to search by model or provider. Search ignores case and splits letters from numbers, so `deep4.1` matches DeepSeek V4.1 Flash.
+- Use ↑ / ↓ to select a search result, Enter to locate it, and Esc to close search. Results show intelligence, cost, and time; unavailable metrics appear as `—` and cannot be located.
+- Double-click a point in free 3D to center the camera without changing axis bounds or marker sizes. Search also locates points in planes without changing the current view.
+- Right-click a point to hide it for the current browser session. Searching for a hidden model and selecting it restores it.
+- Press R to show all models and reset the current view. Shortcuts do not interrupt typing in the search field.
 
-“最新”只表示**当前收录数据中同系列的最新版本**，优先按发布日期排序，日期不完整时使用可识别版本号；有歧义的版本列为待确认。系列和具体版本保持分离，例如 GPT Sol 与 GPT Luna、不同参数规模的模型不混为同一产品线。缺少完整三轴指标的最新版本会标明不可绘制，不会把旧版本冒充最新。
+3D axes use muted blue (intelligence), green (cost), and purple (time). Bounds start at zero and cover the full valid dataset, including on first load and after live updates. The **Ideal corner** marks the direction of higher intelligence, lower cost, and less time; it is not a combined model ranking.
 
-## 数据与自动更新
+## Data
 
-来源：[Artificial Analysis 模型列表](https://artificialanalysis.ai/models/)，[指标方法](https://artificialanalysis.ai/methodology)。快照及获取时间保存在 src/data.json，包含缺指标条目；只有三轴指标均有效的条目绘图，缺失值不补零。
+Source: [Artificial Analysis](https://artificialanalysis.ai/models/). The checked-in snapshot contains 704 models and reasoning variants, of which 187 have all three required metrics. Missing values are never replaced with zero. Snapshot timestamps and original precision are retained in `src/data.json`; the live snapshot can differ after scheduled updates.
 
-成本为 intelligenceIndexCostPerTask.cost.total（USD / 任务）；时间为 intelligenceIndexTimePerTask（秒，显示时除以 60），不含 TTFT 等开销。releaseDate 用于版本归类。模型与有效档位数由数据动态计算，不写死在界面。
+Cost comes from `intelligenceIndexCostPerTask.cost.total`; time comes from `intelligenceIndexTimePerTask` in seconds and is converted to minutes for display. Time measures weighted decoding time, excluding TTFT and other overhead. See the [source methodology](https://artificialanalysis.ai/methodology).
 
-GitHub Actions 的 Refresh model snapshot 每小时检查源站，也可手动触发。源站的公开页面声明数据资源及 AES-GCM + gzip 加载参数，无需登录或 API 密钥。刷新先校验完整性、重复 ID 和指标，再原子写入快照；模型数据未变时不提交，抓取或校验失败时保留原文件并使任务报错。
+## Local development
 
-页面启动、重新可见以及每 5 分钟读取一次 Mou7s/ai 的 main 分支公开快照，因此数据归类更新不依赖重新部署页面。读取失败、快照无效或比当前数据更旧时保留现有图表；默认全选会纳入新模型，部分选择只保留已选 ID。最新版本的出现取决于源站收录和定时任务成功运行，页面会显示快照日期。
-
-合并后需确保仓库启用 Actions，并允许该刷新任务写入 main（分支保护若限制机器人写入，需由维护者配置）。Fork 默认仍读取正式仓库；独立运行时应将 src/main.js 的快照 URL 改为自己的仓库。
-
-## 开发、检查和部署
-
-Node.js >= 24.5。
+Nuxt 4, Vue 3, and Plotly, with Bun 1.4.3 for dependencies, development, and static generation. Node.js >= 24.5 is required for the data refresh script and deployment tooling.
 
 ```sh
-npm ci
-npm run dev
-npm run check
-npm test
-npm run build
+bun install --frozen-lockfile
+bun run dev
 ```
 
-端到端检查使用构建后的页面，另开终端运行预览：
+Development runs at http://127.0.0.1:3000. The chart loads only in the browser. `bun run build` generates `.output/public`; `bun run preview` previews the generated site. The local Nuxt server does not run the production Worker's `/api/data` endpoint, so the chart falls back to its bundled snapshot.
+
+## Deployment on push
+
+Production uses Cloudflare Workers with Static Assets and the `MODEL_DATA` KV namespace configured in `wrangler.jsonc`. Cloudflare runs the Worker, not Bun.
+
+Connect the existing `ai` Worker to Git using these Cloudflare Workers Builds settings:
+
+| Setting           | Value                               |
+| ----------------- | ----------------------------------- |
+| Repository        | `Mou7s/ai`                          |
+| Production branch | `main`                              |
+| Root directory    | Repository root                     |
+| Build command     | `bun run build`                     |
+| Deploy command    | `npx wrangler deploy`               |
+| Disable builds    | Off                                 |
+| Preview builds    | Off for production-only deployments |
+
+Once connected, pushing to `main` triggers a Cloudflare build and deployment to `ai.mou7s.com`. Check the Worker's Builds page for the commit, logs, and deployment result. Authentication is managed by Cloudflare Workers Builds; no GitHub Actions deployment token is needed. This repository intentionally has no separate GitHub Actions deployment workflow.
+
+For manual deployment, run `bunx wrangler login`, then `bun run deploy`. The existing account, custom domain, KV namespace, and Cron schedule are declared in `wrangler.jsonc`.
+
+## Scheduled data refresh
+
+Cloudflare Cron refreshes model data every six hours (02:00, 08:00, 14:00, and 20:00 Asia/Shanghai). Valid snapshots are written to Workers KV. `/api/data` serves the current snapshot with a five-minute cache; unavailable KV data falls back to the deployed snapshot. Failed refreshes preserve the last successful snapshot.
+
+Scheduled refreshes do not change the Git snapshot or deploy code. The browser reads the same-origin `/api/data` on load, every five minutes, and when the page becomes visible. Invalid, older, or unavailable responses retain the current snapshot and selection. Inspect scheduled task logs in the Worker's Observability page and schedules in Triggers.
+
+The existing fetcher now retains `releaseDate` for version classification. The bundled snapshot restores previously recorded release metadata by stable model ID without changing upstream metrics. Legacy KV snapshots that omit that field retain known dates in the browser until the next successful scheduled refresh; unknown dates are not invented. No additional GitHub Actions fetcher, scraper, or GitHub raw-data polling is used.
+
+To refresh the checked-in snapshot manually:
 
 ```sh
-npx playwright install chromium
-npm run preview -- --port 4173
-# 另一个终端
-npm run test:ui
+bun run refresh-data
+bun run check
 ```
 
-可用 BASE_URL 指定测试地址、PLAYWRIGHT_CHANNEL=chrome 使用已安装的 Chrome。测试覆盖视图、缩放边界与鼠标锚点、数据完整性、层级选择、新版本提升、异常快照保留、语言主题和偏好持久化；截图写入被忽略的 test-results/。PR 的 Check application 工作流运行数据检查、单元测试、构建和浏览器测试。
+The refresh script uses Node's `--use-env-proxy`, reads public source data, and needs no source API key. Source format changes or insufficient valid data cause it to fail without replacing the snapshot.
+
+## Validation
 
 ```sh
-npm run refresh-data   # 手动刷新源站快照
-npm run check
-npm run deploy         # Vite 构建后部署 Cloudflare Workers Static Assets
+bun run check
+bun run test
+bun run build
+bunx wrangler deploy --dry-run
 ```
 
-域名和部署配置保留在 wrangler.jsonc。源码中的 catalog.js 管理系列/版本归类，preferences.js 管理翻译和主题，snapshot.js 在浏览器和刷新脚本间共享数据校验；不提交本地实验页、内嵌 Plotly 副本及过期截图。
+For a local scheduled refresh, run `bunx wrangler dev --test-scheduled` and request `/cdn-cgi/mf/scheduled`. Local KV is separate from production.
+
+For browser tests, run `bunx playwright install chromium`, serve the generated site (or run the local Worker), then run `BASE_URL=http://127.0.0.1:3000 bun run test:ui`. Set `PLAYWRIGHT_CHANNEL=chrome` to use an installed Chrome. Reports and screenshots go to ignored `test-results/`. Tests cover Nuxt hydration, the existing Cloudflare API and fallback, legacy release metadata, model selection, plane zoom/panning, preferences, and upstream search/center/hide/reset behavior.

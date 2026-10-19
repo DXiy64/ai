@@ -1,5 +1,7 @@
 const dictionary = {
   zh: {
+    idealCorner: "◇ 理想方向",
+    idealHint: "能力更高、成本和时间更低；不是综合排名",
     appTitle: "AI 模型对比",
     free: "自由视图",
     front: "正视图",
@@ -43,7 +45,7 @@ const dictionary = {
     basisOnly: "仅收录此版本",
     empty: "尚未选择模型",
     emptyHint: "在菜单中勾选模型，开始对比",
-    freeHint: "拖动旋转 · 滚轮缩放 · 仅显示散点",
+    freeHint: "拖动旋转 · 滚轮缩放 · 双击定位 · 右键隐藏 · / 搜索 · R 复位",
     planeHint:
       "拖动平移 · 滚轮按鼠标位置缩放 · 点击当前视图复位 · 连线按思维档位排序",
     axisCaption: "横轴：{x} · 纵轴：{y} · 右上角表示当前两项指标更优",
@@ -54,10 +56,10 @@ const dictionary = {
     reset: "切换并复位{name}",
     snapshot: "快照 {date}",
     checking: "检查更新中",
-    projectChecks: "每小时检查项目快照",
+    projectChecks: "Cloudflare 每 6 小时更新 · 每 5 分钟检查",
     retained: "更新失败，保留快照",
-    local: "本地快照",
-    hourly: "每小时检查更新",
+    local: "部署快照",
+    hourly: "Cloudflare 每 6 小时更新",
     dataHelp: "按当前数据自动分类，优先发布日期，无日期时按版本号推断。",
     sourceState: "源站状态：",
     invalid: "无效的数据快照",
@@ -74,6 +76,9 @@ const dictionary = {
     minutesTask: "分钟 / 任务",
   },
   en: {
+    idealCorner: "◇ Ideal corner",
+    idealHint:
+      "Higher intelligence, lower cost and time; not a combined ranking",
     appTitle: "AI Model Compare",
     free: "Free view",
     front: "Front",
@@ -118,7 +123,8 @@ const dictionary = {
     basisOnly: "the only recorded version",
     empty: "No models selected",
     emptyHint: "Choose models in the menu to compare",
-    freeHint: "Drag to rotate · Scroll to zoom · Points only",
+    freeHint:
+      "Drag to rotate · Scroll to zoom · Double-click center · Right-click hide · / Search · R Reset",
     planeHint:
       "Drag to pan · Scroll to zoom at cursor · Click current view to reset · Lines follow effort order",
     axisCaption: "X: {x} · Y: {y} · Upper right is better on these two metrics",
@@ -129,10 +135,10 @@ const dictionary = {
     reset: "Switch to and reset {name}",
     snapshot: "Data {date}",
     checking: "Checking updates",
-    projectChecks: "Hourly project snapshot checks",
+    projectChecks: "Cloudflare 6h refresh · 5min checks",
     retained: "Update failed; keeping snapshot",
-    local: "Local snapshot",
-    hourly: "Hourly update checks",
+    local: "Bundled snapshot",
+    hourly: "Cloudflare updates every 6 hours",
     dataHelp:
       "Classified within this dataset: release dates first, version order if dates are absent.",
     sourceState: "Source status: ",

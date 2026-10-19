@@ -1,7 +1,8 @@
 {
   "source": "https://artificialanalysis.ai/models/",
   "methodology": "https://artificialanalysis.ai/methodology",
-  "retrievedAt": "2026-10-17T10:38:25.954Z",
+  "retrievedAt": "2026-10-17T14:02:04.036Z",
+  "scope": "Full public model leaderboard including reasoning and effort variants; only complete three-axis models are plotted",
   "models": [
     {
       "id": "0081ab31-d10a-44a0-a10d-eee5533fec65",

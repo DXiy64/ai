@@ -1,0 +1,3 @@
+<template>
+  <ModelChart />
+</template>

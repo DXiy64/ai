@@ -4,26 +4,29 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
-    "deploy": "npm run build && wrangler deploy",
+    "dev": "bun --bun nuxt dev --host 127.0.0.1",
+    "build": "bun --bun nuxt generate",
+    "preview": "bun --bun nuxt preview",
+    "deploy": "bun run build && wrangler deploy",
     "refresh-data": "node --use-env-proxy scripts/refresh-data.mjs",
-    "check": "node scripts/check-data.mjs",
-    "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test tests/catalog.test.mjs tests/source.test.mjs",
-    "test:ui": "node tests/preferences-zoom.cjs && node tests/catalog-ui.cjs",
-    "format": "prettier --write src scripts tests index.html README.md .github package.json"
+    "check": "bun scripts/check-data.mjs",
+    "postinstall": "bun --bun nuxt prepare",
+    "test": "node --test tests/worker.test.mjs tests/catalog.test.mjs",
+    "test:ui": "node tests/preferences-zoom.cjs && node tests/catalog-ui.cjs && node tests/nuxt-integration.cjs",
+    "format": "prettier --write app tests README.md package.json"
   },
   "engines": {
     "node": ">=24.5.0"
   },
   "dependencies": {
-    "plotly.js-gl3d-dist-min": "^3.3.0"
+    "plotly.js-gl3d-dist-min": "^4.1.2",
+    "nuxt": "^4.6.2",
+    "vue": "^3.5.44"
   },
   "devDependencies": {
-    "playwright": "^1.64.1",
-    "prettier": "^3.9.10",
-    "vite": "^7.1.0",
-    "wrangler": "^4.151.0"
-  }
+    "playwright": "1.64.1",
+    "prettier": "3.9.10",
+    "wrangler": "^4.151.1"
+  },
+  "packageManager": "bun@1.4.3"
 }

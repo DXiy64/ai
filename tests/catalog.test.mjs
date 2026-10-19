@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildCatalog } from "../src/catalog.js";
+import { buildCatalog } from "../app/lib/catalog.js";
 
 const model = (name, releaseDate, extra = {}) => ({
   id: name,
