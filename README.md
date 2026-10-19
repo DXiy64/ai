@@ -18,8 +18,6 @@ Axes use muted blue (intelligence), green (cost), and purple (time). Bounds star
 
 ## Data
 
-Reset view is visible in 3D too. It restores the initial direction, center, and zoom, preserving current hidden models. It does not change metric axis ranges, unlike the separate 3D space-fitting feature.
-
 Source: [Artificial Analysis](https://artificialanalysis.ai/models/). The checked-in snapshot contains 704 models and reasoning variants, of which 187 have all three required metrics. Missing values are never replaced with zero. Snapshot timestamps and original precision are retained in `src/data.json`; the live snapshot can differ after scheduled updates.
 
 Cost comes from `intelligenceIndexCostPerTask.cost.total`; time comes from `intelligenceIndexTimePerTask` in seconds and is converted to minutes for display. Time measures weighted decoding time, excluding TTFT and other overhead. See the [source methodology](https://artificialanalysis.ai/methodology).
